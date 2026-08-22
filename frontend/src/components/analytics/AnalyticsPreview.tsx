@@ -194,19 +194,19 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
       {activeAnalysisView === 'subjects' && (
         <div className="space-y-6 animate-in fade-in duration-200">
           {/* Subject Selector Dropdown */}
-          <div className="bg-white dark:bg-slate-900/80 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
-            <div className="flex items-center gap-3 w-full">
+          <div className="bg-white dark:bg-slate-900/80 p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 w-full">
               <span className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5 flex-shrink-0">
-                <BookOpen className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                <BookOpen className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0" />
                 Select Course:
               </span>
               <select
                 value={selectedCourseCode || ''}
                 onChange={(e) => setSelectedCourseCode(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-xs font-mono font-bold py-2.5 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-500/60 focus:border-amber-500 focus:outline-none transition-all cursor-pointer shadow-inner"
+                className="w-full sm:flex-1 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-xs font-mono font-bold py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-500/60 focus:border-amber-500 focus:outline-none transition-all cursor-pointer shadow-inner"
               >
                 {subjects.map((subj) => (
-                  <option key={subj.course_code} value={subj.course_code} className="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-1">
+                  <option key={subj.course_code} value={subj.course_code} className="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-1.5">
                     {subj.course_code}{subj.course_title ? ` — ${subj.course_title}` : ''}
                   </option>
                 ))}
@@ -218,19 +218,19 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
           {activeSubject && (
             <div className="space-y-6">
               {/* Main Course Header Card */}
-              <Card glass className="p-6 sm:p-8 border-slate-200 dark:border-slate-800 relative overflow-hidden">
+              <Card glass className="p-5 sm:p-8 border-slate-200 dark:border-slate-800 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
                 <div className="pb-6 border-b border-slate-200 dark:border-slate-800">
-                  <div className="flex items-center gap-2 mb-1.5">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="text-xs font-black font-mono px-2.5 py-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                       {activeSubject.course_code}
                     </span>
                     <Badge variant="slate" size="sm">{activeSubject.credit_hours} Credits</Badge>
                     <Badge variant="blue" size="sm">{activeSubject.number_of_students} Enrolled</Badge>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-                    {activeSubject.course_title}
+                  <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight leading-snug break-words">
+                    {activeSubject.course_title || activeSubject.course_code}
                   </h2>
                 </div>
 
@@ -268,7 +268,7 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
                     <span className="text-[10px] text-slate-400 dark:text-slate-500">Subject Peak</span>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 text-center shadow-sm">
+                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 text-center shadow-sm col-span-2 sm:col-span-1">
                     <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Lowest GP</span>
                     <div className="text-xl font-black font-mono text-rose-600 dark:text-rose-400 mt-1">
                       {activeSubject.lowest_gp.toFixed(2)}
