@@ -301,7 +301,7 @@ export const App: React.FC = () => {
           <AnalyticsPreview
             sessionId={activeSession?.id}
             initialStudentId={persistentStudentId}
-            initialView="class"
+            initialView="subjects"
           />
         )}
 
