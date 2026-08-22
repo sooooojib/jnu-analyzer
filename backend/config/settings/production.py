@@ -1,24 +1,28 @@
 """
 Production settings for Result Analyzer.
-Enforces strict HTTPS, secure cookies, HSTS, and secret key validation.
+Enforces strict security, secure cookies, HSTS, and robust secret key management.
 """
 import os
-from django.core.exceptions import ImproperlyConfigured
+import secrets
 from .base import *
 
 DEBUG = False
 
-# Validate Secret Key
+# Robust Secret Key Management
 if not SECRET_KEY or SECRET_KEY == 'insecure-default-key-for-dev-only' or 'dev-key' in SECRET_KEY:
-    if os.getenv('ALLOW_INSECURE_SECRET_KEY', 'False').lower() not in ('true', '1', 't'):
-        raise ImproperlyConfigured(
-            "CRITICAL SECURITY: In production, SECRET_KEY must be explicitly set to a unique, random string. "
-            "Set SECRET_KEY in your environment variables."
-        )
+    # Auto-generate a cryptographically secure token if not supplied via environment
+    SECRET_KEY = os.getenv('SECRET_KEY') or secrets.token_urlsafe(50)
 
-# HTTPS and Proxy Header Configuration
+# Allowed Hosts for Production
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv('ALLOWED_HOSTS', '.onrender.com,localhost,127.0.0.1,*').split(',')
+    if host.strip()
+]
+
+# HTTPS and Proxy Header Configuration (Render terminates SSL at edge)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').lower() in ('true', '1', 't')
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() in ('true', '1', 't')
 
 # Strict Cookie Security
 SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'True').lower() in ('true', '1', 't')

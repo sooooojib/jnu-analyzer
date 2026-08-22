@@ -20,7 +20,7 @@ services:
       - key: CSRF_TRUSTED_ORIGINS
         value: "https://jnu-analyzer.onrender.com,http://localhost:5173"
       - key: SECURE_SSL_REDIRECT
-        value: "True"
+        value: "False"
       - key: SESSION_COOKIE_SECURE
         value: "True"
       - key: CSRF_COOKIE_SECURE
