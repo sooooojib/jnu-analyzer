@@ -207,7 +207,7 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
               >
                 {subjects.map((subj) => (
                   <option key={subj.course_code} value={subj.course_code} className="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-1">
-                    {subj.course_code} — {subj.course_title}
+                    {subj.course_code}{subj.course_title ? ` — ${subj.course_title}` : ''}
                   </option>
                 ))}
               </select>

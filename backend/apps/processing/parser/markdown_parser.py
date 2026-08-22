@@ -197,37 +197,47 @@ class MarkdownSheetParser:
 
     def _extract_declared_course_list(self, lines: List[str]) -> Dict[str, Dict[str, Any]]:
         """
-        Extracts Course List defined in bullet points (e.g. `- CSE-1201: OOP-I (Credit: 3.00)`).
+        Extracts Course List defined in bullet points or numbered lists
+        (e.g. `- [CSE-1201]: OOP-I (Credit: 3.00)` or `- **CSE-1201**: Title` or `1. CSE-1201: Title (Credit: 3)`).
         """
         declared: Dict[str, Dict[str, Any]] = {}
         for line in lines:
             l = line.strip()
-            # Match bullet points like: - CSE-1201: Title (Credit: 3.0) or 1. EEE-2101: Title (Credit: 3.0)
-            m = re.match(r"^[-*0-9.]+\s*([A-Z]{2,6}[\s_\-]?[0-9]{3,4}[A-Z]?)\s*[:\-–]\s*(.*?)$", l, re.I)
+            if not l or (l.startswith("|") and ("student" in l.lower() or "gpa" in l.lower() or "s/n" in l.lower())):
+                continue
+
+            # Match bullet points / numbered lists:
+            # Matches: - [CSE-1201]: Title, - **CSE-1201**: Title, - `CSE-1201`: Title, 1. CSE-1201 - Title, etc.
+            m = re.match(r"^[ \t*#\-0-9.]*\[?\*?`?([A-Za-z]{2,6}[\s_\-]?[0-9]{3,4}[A-Za-z]?)`?\*?\]?\s*[:\-–]\s*(.*?)$", l)
+            if not m:
+                m = re.match(r"^[ \t*#\-0-9.]*\[([A-Za-z]{2,6}[\s_\-]?[0-9]{3,4}[A-Za-z]?)\]\s*[:\-–]?\s*(.*?)$", l)
+
             if m:
                 code_raw = m.group(1).upper().replace(" ", "").replace("_", "-")
                 rest = m.group(2).strip()
                 title = rest
                 credits = None
 
-                # Extract credit in parentheses e.g. (Credit: 3.00) or (3.0 Cr) or (3 Cr)
-                c_match = re.search(r"\((?:credit|cr|credits)?[\s:=]*([0-9]+(?:\.[0-9]+)?)[^)]*cr(?:edits?)?\)", rest, re.I)
+                # Extract credit in parentheses e.g. (Credit: 3.00), (Credit 3), (3.0 Credits), (3.0 Cr)
+                c_match = re.search(r"\((?:credit|cr|credits)?[\s:=]*([0-9]+(?:\.[0-9]+)?)[^)]*(?:credit|cr|credits)?\)", rest, re.I)
                 if not c_match:
-                    c_match = re.search(r"\((?:credit|cr|credits)[\s:=]*([0-9]+(?:\.[0-9]+)?)[^)]*\)", rest, re.I)
+                    c_match = re.search(r"\[(?:credit|cr|credits)?[\s:=]*([0-9]+(?:\.[0-9]+)?)[^\]]*\]", rest, re.I)
 
                 if c_match:
                     try:
                         credits = Decimal(c_match.group(1))
                     except InvalidOperation:
                         pass
-                    # Remove only the credit part from title
+                    # Remove only the credit portion from the title
                     title = rest[:c_match.start()] + rest[c_match.end():]
 
-                declared[code_raw] = {
-                    "course_code": code_raw,
-                    "course_title": title.strip(" -:,"),
-                    "credit_hours": credits or self._infer_default_credit(code_raw, title),
-                }
+                clean_title = title.strip(" -:,\t[]*`")
+                if clean_title:
+                    declared[code_raw] = {
+                        "course_code": code_raw,
+                        "course_title": clean_title,
+                        "credit_hours": credits or self._infer_default_credit(code_raw, clean_title),
+                    }
 
         return declared
 
@@ -369,7 +379,16 @@ class MarkdownSheetParser:
             if lg_idx is not None:
                 col_mapping["course_lg_idx"][code] = lg_idx
 
-            decl = declared_courses.get(code, {})
+            decl = declared_courses.get(code)
+            if not decl:
+                norm_code = re.sub(r'[^A-Za-z0-9]', '', code).upper()
+                for d_k, d_v in declared_courses.items():
+                    if re.sub(r'[^A-Za-z0-9]', '', d_k).upper() == norm_code:
+                        decl = d_v
+                        break
+            if not decl:
+                decl = {}
+
             title = decl.get("course_title", "")
             cred = decl.get("credit_hours", self._infer_default_credit(code, title))
 
