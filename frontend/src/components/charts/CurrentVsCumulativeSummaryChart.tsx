@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { Layers, GraduationCap, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { getLetterGradeFromGP } from '../../utils/gradeUtils';
 
 interface CurrentVsCumulativeSummaryChartProps {
   semesterGPA: number;
@@ -72,8 +73,13 @@ export const CurrentVsCumulativeSummaryChart: React.FC<CurrentVsCumulativeSummar
           <div className="flex items-baseline justify-between">
             <div>
               <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-sans font-semibold">Current-Semester GPA</span>
-              <div className="text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">
-                {semesterGPA.toFixed(2)}
+              <div className="flex items-baseline gap-2 mt-0.5">
+                <div className="text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400">
+                  {semesterGPA.toFixed(2)}
+                </div>
+                <span className="text-xs font-bold font-sans text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-500/20 dark:border-emerald-500/30">
+                  {getLetterGradeFromGP(semesterGPA)}
+                </span>
               </div>
             </div>
             <div className="text-right">
@@ -105,8 +111,13 @@ export const CurrentVsCumulativeSummaryChart: React.FC<CurrentVsCumulativeSummar
           <div className="flex items-baseline justify-between">
             <div>
               <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-sans font-semibold">Cumulative CGPA</span>
-              <div className="text-3xl font-black font-mono text-sky-600 dark:text-sky-400 mt-0.5">
-                {cumulativeCGPA.toFixed(2)}
+              <div className="flex items-baseline gap-2 mt-0.5">
+                <div className="text-3xl font-black font-mono text-sky-600 dark:text-sky-400">
+                  {cumulativeCGPA.toFixed(2)}
+                </div>
+                <span className="text-xs font-bold font-sans text-sky-700 dark:text-sky-300 bg-sky-500/10 dark:bg-sky-500/20 px-1.5 py-0.5 rounded border border-sky-500/20 dark:border-sky-500/30">
+                  {getLetterGradeFromGP(cumulativeCGPA)}
+                </span>
               </div>
             </div>
             <div className="text-right">

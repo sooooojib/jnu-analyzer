@@ -5,6 +5,7 @@ import { Button } from '../common/Button';
 import { Alert } from '../common/Alert';
 import { api } from '../../api/endpoints';
 import { StudentRecord } from '../../types/student';
+import { getLetterGradeFromGP } from '../../utils/gradeUtils';
 import { 
   Award, 
   BookOpen, 
@@ -178,15 +179,21 @@ export const StudentScorecardPreview: React.FC<StudentScorecardPreviewProps> = (
               <div className="flex items-center gap-4 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80">
                 <div className="text-right px-2">
                   <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Semester GPA</div>
-                  <div className="text-2xl font-black text-emerald-400 font-mono">
-                    {student.semester_result.gpa.toFixed(2)}
+                  <div className="text-2xl font-black text-emerald-400 font-mono flex items-baseline justify-end gap-1.5">
+                    <span>{student.semester_result.gpa.toFixed(2)}</span>
+                    <span className="text-xs font-bold font-sans text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                      {getLetterGradeFromGP(student.semester_result.gpa)}
+                    </span>
                   </div>
                 </div>
                 <div className="w-px h-10 bg-slate-800" />
                 <div className="text-right px-2">
                   <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Cumulative CGPA</div>
-                  <div className="text-2xl font-black text-sky-400 font-mono">
-                    {student.cumulative_result.cgpa.toFixed(2)}
+                  <div className="text-2xl font-black text-sky-400 font-mono flex items-baseline justify-end gap-1.5">
+                    <span>{student.cumulative_result.cgpa.toFixed(2)}</span>
+                    <span className="text-xs font-bold font-sans text-sky-300 bg-sky-500/20 px-1.5 py-0.5 rounded border border-sky-500/30">
+                      {getLetterGradeFromGP(student.cumulative_result.cgpa)}
+                    </span>
                   </div>
                 </div>
               </div>

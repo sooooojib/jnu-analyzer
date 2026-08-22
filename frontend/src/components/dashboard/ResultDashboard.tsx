@@ -25,6 +25,7 @@ import { GPADistributionChart } from '../charts/GPADistributionChart';
 import { StudentVsClassAverageChart } from '../charts/StudentVsClassAverageChart';
 import { SubjectGPComparisonChart } from '../charts/SubjectGPComparisonChart';
 import { CurrentVsCumulativeSummaryChart } from '../charts/CurrentVsCumulativeSummaryChart';
+import { getLetterGradeFromGP } from '../../utils/gradeUtils';
 
 interface ResultDashboardProps {
   sessionId?: string;
@@ -278,8 +279,13 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                   </span>
                   <Badge variant="emerald" size="sm">{student.semester_result.result_status || 'PASSED'}</Badge>
                 </div>
-                <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400">
-                  {student.semester_result.gpa.toFixed(2)}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-3xl font-black font-mono text-emerald-600 dark:text-emerald-400">
+                    {student.semester_result.gpa.toFixed(2)}
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold font-sans text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-500/20 px-2 py-0.5 rounded-lg border border-emerald-500/20 dark:border-emerald-500/30">
+                    {getLetterGradeFromGP(student.semester_result.gpa)}
+                  </span>
                 </div>
               </div>
               <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
@@ -320,8 +326,13 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                   </span>
                   <Badge variant="blue" size="sm">{student.cumulative_result.result_status || 'PASSED'}</Badge>
                 </div>
-                <div className="text-2xl sm:text-3xl font-black font-mono text-sky-600 dark:text-sky-400">
-                  {student.cumulative_result.cgpa.toFixed(2)}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-3xl font-black font-mono text-sky-600 dark:text-sky-400">
+                    {student.cumulative_result.cgpa.toFixed(2)}
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold font-sans text-sky-700 dark:text-sky-300 bg-sky-500/10 dark:bg-sky-500/20 px-2 py-0.5 rounded-lg border border-sky-500/20 dark:border-sky-500/30">
+                    {getLetterGradeFromGP(student.cumulative_result.cgpa)}
+                  </span>
                 </div>
               </div>
               <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
