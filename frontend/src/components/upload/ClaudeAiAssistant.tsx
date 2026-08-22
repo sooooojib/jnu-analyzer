@@ -12,8 +12,7 @@ import {
   GraduationCap,
   BookOpen,
   Building2,
-  Sliders,
-  Award
+  Sliders
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
@@ -297,61 +296,6 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
               </a>
             );
           })}
-        </div>
-      </div>
-
-      {/* Official Grading Scale Reference Table */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-2.5">
-          <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-              Standard UGC / University Grading Scale (Implemented System-Wide)
-            </span>
-          </div>
-          <Badge variant="emerald" size="sm">Standard 4.00 Scale</Badge>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center font-mono">
-          <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-            <div className="text-xs font-black text-emerald-600 dark:text-emerald-400">A+ = 4.00</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">80% and above</div>
-          </div>
-          <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-            <div className="text-xs font-black text-emerald-600 dark:text-emerald-400">A = 3.75</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">75% to &lt;80%</div>
-          </div>
-          <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-            <div className="text-xs font-black text-emerald-600 dark:text-emerald-400">A- = 3.50</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">70% to &lt;75%</div>
-          </div>
-          <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
-            <div className="text-xs font-black text-blue-600 dark:text-blue-400">B+ = 3.25</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">65% to &lt;70%</div>
-          </div>
-          <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
-            <div className="text-xs font-black text-blue-600 dark:text-blue-400">B = 3.00</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">60% to &lt;65%</div>
-          </div>
-          <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
-            <div className="text-xs font-black text-blue-600 dark:text-blue-400">B- = 2.75</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">55% to &lt;60%</div>
-          </div>
-          <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
-            <div className="text-xs font-black text-blue-600 dark:text-blue-400">C+ = 2.50</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">50% to &lt;55%</div>
-          </div>
-          <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20">
-            <div className="text-xs font-black text-blue-600 dark:text-blue-400">C = 2.25</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">45% to &lt;50%</div>
-          </div>
-          <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
-            <div className="text-xs font-black text-amber-600 dark:text-amber-400">D = 2.00</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">40% to &lt;45%</div>
-          </div>
-          <div className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20">
-            <div className="text-xs font-black text-rose-600 dark:text-rose-400">F = 0.00</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400">&lt;40% (Fail)</div>
-          </div>
         </div>
       </div>
 
