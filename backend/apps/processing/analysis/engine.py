@@ -83,12 +83,16 @@ def compute_distribution_histogram(values: List[float], max_scale: float = 4.0) 
 
     total = len(values)
     brackets = [
-        {"label": "3.75 – 4.00 (Outstanding)", "min": 3.75, "max": 4.01, "count": 0},
-        {"label": "3.50 – 3.74 (Very Good)", "min": 3.50, "max": 3.75, "count": 0},
-        {"label": "3.00 – 3.49 (Good)", "min": 3.00, "max": 3.50, "count": 0},
-        {"label": "2.50 – 2.99 (Satisfactory)", "min": 2.50, "max": 3.00, "count": 0},
-        {"label": "2.00 – 2.49 (Pass)", "min": 2.00, "max": 2.50, "count": 0},
-        {"label": "< 2.00 (Failing / Remedial)", "min": 0.00, "max": 2.00, "count": 0},
+        {"label": "A+ (4.00)", "min": 4.00, "max": 4.01, "count": 0},
+        {"label": "A (3.75–3.99)", "min": 3.75, "max": 4.00, "count": 0},
+        {"label": "A- (3.50–3.74)", "min": 3.50, "max": 3.75, "count": 0},
+        {"label": "B+ (3.25–3.49)", "min": 3.25, "max": 3.50, "count": 0},
+        {"label": "B (3.00–3.24)", "min": 3.00, "max": 3.25, "count": 0},
+        {"label": "B- (2.75–2.99)", "min": 2.75, "max": 3.00, "count": 0},
+        {"label": "C+ (2.50–2.74)", "min": 2.50, "max": 2.75, "count": 0},
+        {"label": "C (2.25–2.49)", "min": 2.25, "max": 2.50, "count": 0},
+        {"label": "D (2.00–2.24)", "min": 2.00, "max": 2.25, "count": 0},
+        {"label": "F (< 2.00)", "min": 0.00, "max": 2.00, "count": 0},
     ]
 
     for val in values:

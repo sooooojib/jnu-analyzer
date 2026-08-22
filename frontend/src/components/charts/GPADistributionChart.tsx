@@ -23,7 +23,6 @@ export const GPADistributionChart: React.FC<GPADistributionChartProps> = ({
   title = 'Class GPA Distribution (Current Semester)',
   metricLabel = 'Current-Semester GPA',
 }) => {
-  const [hoveredBracket, setHoveredBracket] = useState<MetricDistributionItem | null>(null);
   const [showTableView, setShowTableView] = useState(false);
 
   const maxCount = Math.max(...distribution.map((d) => d.count), 1);
@@ -31,24 +30,56 @@ export const GPADistributionChart: React.FC<GPADistributionChartProps> = ({
   // Helper to determine if the selected student falls into this bracket
   const isStudentInBracket = (bracket: string, gpa?: number): boolean => {
     if (gpa === undefined || gpa === null) return false;
-    if (bracket.includes('3.75') && gpa >= 3.75 && gpa <= 4.0) return true;
-    if (bracket.includes('3.50') && gpa >= 3.50 && gpa < 3.75) return true;
-    if (bracket.includes('3.00') && gpa >= 3.00 && gpa < 3.50) return true;
-    if (bracket.includes('2.50') && gpa >= 2.50 && gpa < 3.00) return true;
-    if (bracket.includes('2.00') && gpa >= 2.00 && gpa < 2.50) return true;
-    if (bracket.includes('< 2.00') || bracket.includes('<2')) return gpa < 2.00;
+    const b = bracket.toUpperCase().trim();
+    if (b.startsWith('A+') || (b.includes('4.00') && !b.includes('3.75'))) return gpa >= 4.00;
+    if (b.startsWith('A ') || b.startsWith('A(') || b.startsWith('A (')) return gpa >= 3.75 && gpa < 4.00;
+    if (b.startsWith('A-') || (b.includes('3.50') && !b.includes('3.25'))) return gpa >= 3.50 && gpa < 3.75;
+    if (b.startsWith('B+') || (b.includes('3.25') && !b.includes('3.00'))) return gpa >= 3.25 && gpa < 3.50;
+    if (b.startsWith('B ') || b.startsWith('B(') || b.startsWith('B (')) return gpa >= 3.00 && gpa < 3.25;
+    if (b.startsWith('B-') || (b.includes('2.75') && !b.includes('2.50'))) return gpa >= 2.75 && gpa < 3.00;
+    if (b.startsWith('C+') || (b.includes('2.50') && !b.includes('2.25'))) return gpa >= 2.50 && gpa < 2.75;
+    if (b.startsWith('C ') || b.startsWith('C(') || b.startsWith('C (')) return gpa >= 2.25 && gpa < 2.50;
+    if (b.startsWith('D') || (b.includes('2.00') && !b.includes('<'))) return gpa >= 2.00 && gpa < 2.25;
+    if (b.startsWith('F') || b.includes('< 2.00') || b.includes('<2')) return gpa < 2.00;
+
+    // Fallback if bracket label is legacy interval (e.g. 3.75 - 4.00)
+    if (b.includes('3.75') && gpa >= 3.75) return true;
+    if (b.includes('3.50') && gpa >= 3.50 && gpa < 3.75) return true;
+    if (b.includes('3.00') && gpa >= 3.00 && gpa < 3.50) return true;
+    if (b.includes('2.50') && gpa >= 2.50 && gpa < 3.00) return true;
+    if (b.includes('2.00') && gpa >= 2.00 && gpa < 2.50) return true;
+    if (b.includes('< 2.00') || b.includes('<2')) return gpa < 2.00;
     return false;
   };
 
-  // Helper for clean, short mobile labels
-  const getShortBracketLabel = (bracket: string): string => {
-    if (bracket.includes('3.75')) return '≥3.75';
-    if (bracket.includes('3.50')) return '3.50+';
-    if (bracket.includes('3.00')) return '3.00+';
-    if (bracket.includes('2.50')) return '2.50+';
-    if (bracket.includes('2.00')) return '2.00+';
-    if (bracket.includes('< 2.00') || bracket.includes('<2')) return '<2.0';
-    return bracket.split('(')[0].trim();
+  // Extract clean Letter Grade and Range
+  const formatGradeLabel = (bracket: string): { grade: string; range: string } => {
+    const parts = bracket.split('(');
+    let grade = parts[0].trim();
+    let range = parts[1] ? parts[1].replace(')', '').trim() : '';
+
+    // If legacy numeric bracket, assign letter grade
+    if (!parts[1] && (grade.includes('3.75') || grade.includes('4.00'))) {
+      grade = 'A+ / A';
+      range = '3.75–4.00';
+    } else if (!parts[1] && grade.includes('3.50')) {
+      grade = 'A-';
+      range = '3.50–3.74';
+    } else if (!parts[1] && grade.includes('3.00')) {
+      grade = 'B / B+';
+      range = '3.00–3.49';
+    } else if (!parts[1] && grade.includes('2.50')) {
+      grade = 'B- / C+';
+      range = '2.50–2.99';
+    } else if (!parts[1] && grade.includes('2.00')) {
+      grade = 'C / D';
+      range = '2.00–2.49';
+    } else if (!parts[1] && (grade.includes('<') || grade.includes('F'))) {
+      grade = 'F';
+      range = '<2.00';
+    }
+
+    return { grade, range };
   };
 
   return (
@@ -113,7 +144,7 @@ export const GPADistributionChart: React.FC<GPADistributionChartProps> = ({
           <table className="w-full text-left text-xs font-mono">
             <thead className="bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
               <tr>
-                <th className="p-2.5">Score Bracket</th>
+                <th className="p-2.5">Grade / Score Bracket</th>
                 <th className="p-2.5 text-center">Student Count</th>
                 <th className="p-2.5 text-center">Cohort Percentage</th>
                 <th className="p-2.5 text-center">Selected Student</th>
@@ -123,10 +154,10 @@ export const GPADistributionChart: React.FC<GPADistributionChartProps> = ({
               {distribution.map((item) => {
                 const inBracket = isStudentInBracket(item.bracket, selectedStudentGPA);
                 return (
-                  <tr key={item.bracket} className={inBracket ? 'bg-emerald-500/10' : ''}>
+                  <tr key={item.bracket} className={inBracket ? 'bg-emerald-500/10 dark:bg-emerald-500/15' : ''}>
                     <td className="p-2.5 font-bold">{item.bracket}</td>
-                    <td className="p-2.5 text-center">{item.count}</td>
-                    <td className="p-2.5 text-center">{item.percentage.toFixed(1)}%</td>
+                    <td className="p-2.5 text-center font-bold text-slate-900 dark:text-slate-100">{item.count}</td>
+                    <td className="p-2.5 text-center text-emerald-600 dark:text-emerald-400 font-bold">{item.percentage.toFixed(1)}%</td>
                     <td className="p-2.5 text-center font-sans">
                       {inBracket ? <Badge variant="emerald" size="sm">Your Position</Badge> : '—'}
                     </td>
@@ -138,70 +169,60 @@ export const GPADistributionChart: React.FC<GPADistributionChartProps> = ({
         </div>
       ) : (
         /* Visual Responsive Column / Histogram Chart */
-        <div className="pt-4 pb-2 space-y-4">
-          <div className="flex items-end gap-1.5 sm:gap-3 h-52 pt-6 px-1 sm:px-2 relative border-b border-slate-200 dark:border-slate-800">
+        <div className="pt-6 pb-2">
+          <div className="flex items-end gap-1 sm:gap-2.5 h-56 pt-8 px-1 sm:px-2 relative border-b border-slate-200 dark:border-slate-800">
             {distribution.map((item) => {
               const heightPct = Math.round((item.count / maxCount) * 100);
               const inBracket = isStudentInBracket(item.bracket, selectedStudentGPA);
+              const { grade, range } = formatGradeLabel(item.bracket);
 
               return (
                 <div
                   key={item.bracket}
-                  className="flex-1 flex flex-col items-center h-full justify-end group relative cursor-pointer min-w-0"
-                  onMouseEnter={() => setHoveredBracket(item)}
-                  onMouseLeave={() => setHoveredBracket(null)}
+                  className="flex-1 flex flex-col items-center h-full justify-end relative min-w-0"
                 >
-                  {/* Selected Student Marker */}
+                  {/* Selected Student Floating Marker */}
                   {inBracket && (
-                    <div className="absolute -top-6 text-[9px] sm:text-[10px] font-bold font-mono px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500 text-white shadow-md whitespace-nowrap">
+                    <div className="absolute -top-7 text-[9px] sm:text-[10px] font-black font-mono px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 shadow-md ring-2 ring-emerald-400/50 whitespace-nowrap z-10 animate-bounce">
                       You
                     </div>
                   )}
 
-                  {/* Count label above bar */}
-                  {item.count > 0 && (
-                    <div className="text-[9px] sm:text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 mb-0.5">
-                      {item.count}
-                    </div>
-                  )}
+                  {/* Count label directly above bar */}
+                  <div className={`text-[10px] sm:text-xs font-mono font-bold mb-1 ${inBracket ? 'text-emerald-600 dark:text-emerald-400 font-black' : 'text-slate-600 dark:text-slate-300'}`}>
+                    {item.count}
+                  </div>
 
                   {/* Histogram Bar */}
                   <div
                     className={`w-full max-w-[48px] rounded-t-lg transition-all duration-300 ${
                       inBracket
-                        ? 'bg-gradient-to-t from-emerald-600 to-emerald-400 ring-2 ring-emerald-400 shadow-md shadow-emerald-500/20'
-                        : 'bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700'
+                        ? 'bg-gradient-to-t from-emerald-600 to-emerald-400 ring-2 ring-emerald-400 shadow-lg shadow-emerald-500/25'
+                        : item.count > 0
+                        ? 'bg-slate-200 dark:bg-slate-800/90 hover:bg-slate-300 dark:hover:bg-slate-700/90'
+                        : 'bg-slate-100 dark:bg-slate-800/30'
                     }`}
                     style={{ height: `${Math.max(heightPct, 6)}%` }}
                   />
 
-                  {/* X-axis Label */}
-                  <div className="mt-1.5 text-center w-full overflow-hidden">
-                    <span className={`text-[9px] sm:text-[10px] font-mono block leading-tight truncate ${inBracket ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-600 dark:text-slate-400'}`}>
-                      {/* Short clean bracket on mobile, full on sm+ */}
-                      <span className="sm:hidden">{getShortBracketLabel(item.bracket)}</span>
-                      <span className="hidden sm:block truncate">{item.bracket.split('(')[0].trim()}</span>
-                    </span>
-                    <span className="text-[8px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                  {/* X-axis Label: Grade + Range + Percentage */}
+                  <div className="mt-2 text-center w-full px-0.5">
+                    <div className={`text-[11px] sm:text-xs font-black font-mono tracking-tight leading-tight ${inBracket ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-800 dark:text-slate-200'}`}>
+                      {grade}
+                    </div>
+                    {range && (
+                      <div className="text-[9px] text-slate-400 dark:text-slate-500 font-mono hidden md:block leading-tight mt-0.5">
+                        {range}
+                      </div>
+                    )}
+                    <div className={`text-[10px] sm:text-[11px] font-bold font-mono mt-0.5 ${inBracket ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
                       {item.percentage.toFixed(0)}%
-                    </span>
+                    </div>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          {/* Hover Tooltip Details */}
-          {hoveredBracket && (
-            <div className="p-2.5 sm:p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs font-mono animate-in fade-in duration-100">
-              <span className="text-slate-700 dark:text-slate-300">
-                Bracket <strong className="text-slate-900 dark:text-slate-100">{hoveredBracket.bracket}</strong>:
-              </span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                {hoveredBracket.count} {hoveredBracket.count === 1 ? 'student' : 'students'} ({hoveredBracket.percentage.toFixed(1)}% of class)
-              </span>
-            </div>
-          )}
         </div>
       )}
     </Card>
