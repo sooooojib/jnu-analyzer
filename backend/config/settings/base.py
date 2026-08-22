@@ -146,6 +146,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 FRONTEND_DIST = BASE_DIR.parent / 'frontend' / 'dist'
 STATICFILES_DIRS = [FRONTEND_DIST] if FRONTEND_DIST.exists() else []
 
+# WhiteNoise Root: Automatically serves root-level files (favicon.svg, /assets/*, etc.) from frontend dist
+WHITENOISE_ROOT = FRONTEND_DIST if FRONTEND_DIST.exists() else None
+WHITENOISE_INDEX_FILE = True
+
 # Temporary Upload Directory for Ephemeral Processing
 UPLOAD_DIR = Path(os.getenv('UPLOAD_DIR', BASE_DIR / 'uploads'))
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)

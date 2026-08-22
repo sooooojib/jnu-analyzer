@@ -105,6 +105,6 @@ urlpatterns = [
     path('api/v1/sessions/', include('apps.sessions_manager.urls', namespace='sessions_manager')),
     path('api/v1/sessions/', include('apps.processing.urls', namespace='processing')),
     
-    # SPA catch-all for unified production container
-    re_path(r'^(?!api/|admin/|static/).*$', serve_spa, name='spa_catchall'),
+    # SPA catch-all for unified production container, excluding API routes and static assets
+    re_path(r'^(?!api/|admin/|static/|assets/|favicon\.svg).*$', serve_spa, name='spa_catchall'),
 ]
