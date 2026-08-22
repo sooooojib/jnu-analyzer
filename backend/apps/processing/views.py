@@ -208,10 +208,10 @@ class ClaudePromptView(APIView):
                 "ai_tools": [
                     {
                         "name": "Google AI Studio",
-                        "model": "Gemini 1.5 Pro / 2.0 Pro (Latest)",
+                        "model": "Gemini 3.1 Pro / Pro (Latest)",
                         "url": "https://aistudio.google.com",
                         "description": "Recommended for multi-page documents (supports 10+ high-res result sheets with 2M token window).",
-                        "badge": "Best for Multi-Page",
+                        "badge": "⭐ #1 Recommended",
                         "color": "amber",
                     },
                     {

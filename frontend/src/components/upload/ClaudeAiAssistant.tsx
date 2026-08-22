@@ -11,7 +11,8 @@ import {
   Cpu,
   GraduationCap,
   BookOpen,
-  Building2
+  Building2,
+  Sliders
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
@@ -42,10 +43,10 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
   const [aiTools, setAiTools] = useState<AiTool[]>([
     {
       name: 'Google AI Studio',
-      model: 'Gemini 1.5 Pro / 2.0 Pro (Latest)',
+      model: 'Gemini 3.1 Pro / Pro (Latest)',
       url: 'https://aistudio.google.com',
       description: 'Recommended for Multi-Page Merging: Upload 2–10+ photos at once with massive 2M token context window.',
-      badge: 'Best for Multi-Page',
+      badge: '⭐ #1 Recommended',
       color: 'amber',
     },
     {
@@ -220,40 +221,69 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-          {aiTools.map((tool, idx) => (
-            <a
-              key={idx}
-              href={tool.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 rounded-2xl bg-white dark:bg-slate-900/70 hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 dark:hover:border-emerald-500/50 transition-all group flex flex-col justify-between space-y-3 shadow-sm hover:scale-[1.01] active:scale-[0.99]"
-            >
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                      {tool.name}
-                    </span>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-500 transition-colors" />
-                  </div>
-                  <Badge variant={tool.name.includes('Google') ? 'amber' : tool.name.includes('Claude') ? 'blue' : 'emerald'} size="sm">
-                    {tool.badge}
-                  </Badge>
-                </div>
-                <div className="text-[11px] font-mono text-sky-600 dark:text-sky-400 font-medium">
-                  {tool.model}
-                </div>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {tool.description}
-                </p>
-              </div>
+          {aiTools.map((tool, idx) => {
+            const isGoogle = tool.name.toLowerCase().includes('google');
+            return (
+              <a
+                key={idx}
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`p-4 rounded-2xl transition-all group flex flex-col justify-between space-y-3 relative overflow-hidden ${
+                  isGoogle
+                    ? 'bg-gradient-to-br from-amber-500/10 via-white to-amber-500/5 dark:from-amber-500/15 dark:via-slate-900/90 dark:to-slate-900/90 border-2 border-amber-500/70 dark:border-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.28)] dark:shadow-[0_0_30px_rgba(245,158,11,0.35)] ring-2 ring-amber-500/40 dark:ring-amber-400/60 hover:scale-[1.02] active:scale-[0.99]'
+                    : 'bg-white dark:bg-slate-900/70 hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 dark:hover:border-emerald-500/50 shadow-sm hover:scale-[1.01] active:scale-[0.99]'
+                }`}
+              >
+                {/* Glowing ambient light flare */}
+                {isGoogle && (
+                  <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/20 dark:bg-amber-400/25 rounded-full blur-2xl pointer-events-none" />
+                )}
 
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-700 dark:text-slate-300 font-semibold group-hover:text-emerald-600 dark:group-hover:text-white">
-                <span>Launch {tool.name}</span>
-                <span className="text-emerald-500 group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-            </a>
-          ))}
+                <div className="space-y-2 relative z-10">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className={`text-sm font-bold transition-colors ${isGoogle ? 'text-amber-950 dark:text-amber-300 group-hover:text-amber-600 dark:group-hover:text-amber-200' : 'text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400'}`}>
+                        {tool.name}
+                      </span>
+                      <ExternalLink className={`w-3.5 h-3.5 ${isGoogle ? 'text-amber-500' : 'text-slate-400 group-hover:text-emerald-500'} transition-colors`} />
+                    </div>
+                    {isGoogle ? (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wider bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 flex items-center gap-1 shadow-sm shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping" />
+                        RECOMMENDED
+                      </span>
+                    ) : (
+                      <Badge variant={tool.name.includes('Claude') ? 'blue' : 'emerald'} size="sm">
+                        {tool.badge}
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className={`text-[11px] font-mono font-bold ${isGoogle ? 'text-amber-600 dark:text-amber-400' : 'text-sky-600 dark:text-sky-400'}`}>
+                    {tool.model}
+                  </div>
+
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {tool.description}
+                  </p>
+
+                  {/* Setting instruction for Google AI Studio */}
+                  {isGoogle && (
+                    <div className="mt-2.5 p-2 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30 text-[11px] text-amber-800 dark:text-amber-200 font-semibold flex items-start gap-1.5">
+                      <Sliders className="w-3.5 h-3.5 shrink-0 text-amber-500 dark:text-amber-400 mt-0.5 animate-pulse" />
+                      <span>In Settings: Select <strong>3.1 Pro</strong> or <strong>Pro (Latest)</strong> for best OCR</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className={`pt-2 border-t ${isGoogle ? 'border-amber-500/30 text-amber-900 dark:text-amber-300 font-bold' : 'border-slate-100 dark:border-slate-800/60 text-slate-700 dark:text-slate-300 font-semibold'} flex items-center justify-between text-[11px] relative z-10`}>
+                  <span>Launch {tool.name}</span>
+                  <span className={`${isGoogle ? 'text-amber-500' : 'text-emerald-500'} group-hover:translate-x-1 transition-transform`}>→</span>
+                </div>
+              </a>
+            );
+          })}
         </div>
       </div>
 
