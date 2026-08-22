@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
+import { Button } from '../common/Button';
 import { Alert } from '../common/Alert';
 import { api } from '../../api/endpoints';
 import { CohortAnalytics, SubjectAnalysisItem } from '../../types/analytics';
@@ -15,7 +16,8 @@ import {
   Hash,
   ArrowUpRight,
   ArrowDownRight,
-  Info
+  Info,
+  Download
 } from 'lucide-react';
 
 interface AnalyticsPreviewProps {
@@ -30,6 +32,8 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
 }) => {
   const [analytics, setAnalytics] = useState<CohortAnalytics | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [activeAnalysisView, setActiveAnalysisView] = useState<'class' | 'cumulative' | 'subjects' | 'leaderboard'>(initialView);
   const [rankingSortMode, setRankingSortMode] = useState<'semester' | 'cumulative'>('semester');
@@ -103,12 +107,36 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
     return subjects[0];
   }, [subjects, selectedCourseCode]);
 
+  const handleExportClassPdf = async () => {
+    if (!sessionId) return;
+    setIsExporting(true);
+    setExportMessage(null);
+    try {
+      const blob = await api.exportClassPdf(sessionId);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'JNU_Class_Analysis.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      setExportMessage('Class analysis exported successfully.');
+      setTimeout(() => setExportMessage(null), 4000);
+    } catch (err: any) {
+      console.error('Class export failed', err);
+      setExportMessage('Failed to export class analysis. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   if (isLoading && !analytics) {
     return (
       <Card glass className="p-12 text-center space-y-4">
         <div className="w-12 h-12 border-3 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto" />
-        <h3 className="text-lg font-bold text-slate-200">Computing Deterministic Analytics...</h3>
-        <p className="text-sm text-slate-400">Calculating Mean, Median, Mode, and Subject rankings across verified dataset.</p>
+        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Computing Deterministic Analytics...</h3>
+        <p className="text-sm text-slate-600 dark:text-slate-400">Calculating Mean, Median, Mode, and Subject rankings across verified dataset.</p>
       </Card>
     );
   }
@@ -123,6 +151,46 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
           onClose={() => setErrorMessage(null)}
         />
       )}
+
+      {/* Export Feedback Banner */}
+      {exportMessage && (
+        <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center justify-between animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>{exportMessage}</span>
+          </div>
+          <button type="button" onClick={() => setExportMessage(null)} className="text-emerald-500 hover:text-emerald-700 font-bold ml-2">✕</button>
+        </div>
+      )}
+
+      {/* Header & Export Action */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-3.5 sm:p-4 rounded-2xl shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+            <BarChart3 className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <span>Class Cohort Analytics</span>
+              <Badge variant="emerald" size="sm" className="font-mono">{classData.total_students} Students</Badge>
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {subjects.length} Courses • Class Average GPA: {classData.average_gpa.toFixed(2)}
+            </p>
+          </div>
+        </div>
+
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={handleExportClassPdf}
+          isLoading={isExporting}
+          leftIcon={<Download className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
+          className="w-full sm:w-auto font-medium border-slate-200 dark:border-slate-700/80 hover:border-emerald-500/40 shrink-0"
+        >
+          {isExporting ? 'Generating class analysis...' : 'Export Class Analysis'}
+        </Button>
+      </div>
 
       {/* Nomenclature Guide Banner */}
       <Card glass className="p-4 border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">

@@ -18,7 +18,7 @@ export const Spinner: React.FC<SpinnerProps> = ({ size = 'md', className }) => {
     <div
       className={twMerge(
         clsx(
-          "animate-spin rounded-full border-slate-700 border-t-emerald-400 inline-block",
+          "animate-spin rounded-full border-slate-200 dark:border-slate-700 border-t-emerald-600 dark:border-t-emerald-400 inline-block",
           sizes[size],
           className
         )

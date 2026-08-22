@@ -134,4 +134,43 @@ export const api = {
     );
     return response.data.data;
   },
+
+  // Export endpoints
+  exportStudentPdf: async (sessionId: string, studentId: string): Promise<Blob> => {
+    const response = await apiClient.get(
+      `/sessions/${sessionId}/export/student/${encodeURIComponent(studentId)}/pdf/`,
+      { responseType: 'blob' }
+    );
+    return response.data;
+  },
+
+  exportStudentExcel: async (sessionId: string, studentId: string): Promise<Blob> => {
+    const response = await apiClient.get(
+      `/sessions/${sessionId}/export/student/${encodeURIComponent(studentId)}/excel/`,
+      { responseType: 'blob' }
+    );
+    return response.data;
+  },
+
+  exportClassPdf: async (sessionId: string): Promise<Blob> => {
+    const response = await apiClient.get(
+      `/sessions/${sessionId}/export/class/pdf/`,
+      { responseType: 'blob' }
+    );
+    return response.data;
+  },
+
+  exportComparisonPdf: async (sessionId: string, studentA: string, studentB: string): Promise<Blob> => {
+    const response = await apiClient.get(
+      `/sessions/${sessionId}/export/comparison/pdf/`,
+      {
+        params: {
+          student_a: studentA,
+          student_b: studentB,
+        },
+        responseType: 'blob',
+      }
+    );
+    return response.data;
+  },
 };

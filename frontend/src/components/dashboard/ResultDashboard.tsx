@@ -17,7 +17,8 @@ import {
   Search, 
   GraduationCap,
   Scale, 
-  Info
+  Info,
+  Download
 } from 'lucide-react';
 
 // Charts
@@ -48,6 +49,8 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
   const [student, setStudent] = useState<StudentRecord | null>(null);
   const [analytics, setAnalytics] = useState<CohortAnalytics | null>(null);
   const [isLoadingStudent, setIsLoadingStudent] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
   // Dashboard Sub-tabs
@@ -128,6 +131,31 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
       onCompareStudents(activeStudentId, compareTargetId.trim());
     } else if (onNavigateToTab) {
       onNavigateToTab('comparison');
+    }
+  };
+
+  const handleExportStudentPdf = async () => {
+    if (!sessionId || !student?.student_id) return;
+    setIsExporting(true);
+    setExportMessage(null);
+    try {
+      const blob = await api.exportStudentPdf(sessionId, student.student_id);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const cleanId = student.student_id.replace(/[^a-zA-Z0-9_-]/g, '_');
+      a.download = `JNU_Student_Analysis_${cleanId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      setExportMessage('Student analysis exported successfully.');
+      setTimeout(() => setExportMessage(null), 4000);
+    } catch (err: any) {
+      console.error('Student export failed', err);
+      setExportMessage('Failed to export student analysis. Please try again.');
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -225,6 +253,17 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
         />
       )}
 
+      {/* Export Feedback Banner */}
+      {exportMessage && (
+        <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center justify-between animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>{exportMessage}</span>
+          </div>
+          <button type="button" onClick={() => setExportMessage(null)} className="text-emerald-500 hover:text-emerald-700 font-bold ml-2">✕</button>
+        </div>
+      )}
+
       {/* Loading Skeleton */}
       {isLoadingStudent && !student && <ScorecardSkeleton />}
 
@@ -246,6 +285,35 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
       {/* MAIN DASHBOARD CONTENT */}
       {student && (
         <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Action Bar with Student Export Button */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-3.5 sm:p-4 rounded-2xl shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                <GraduationCap className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <span>{student.student_name}</span>
+                  <Badge variant="emerald" size="sm" className="font-mono">{student.student_id}</Badge>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Class Rank #{student.semester_result.semester_rank} • {student.course_grades.length} Courses Analyzed
+                </p>
+              </div>
+            </div>
+
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleExportStudentPdf}
+              isLoading={isExporting}
+              leftIcon={<Download className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
+              className="w-full sm:w-auto font-medium border-slate-200 dark:border-slate-700/80 hover:border-emerald-500/40 shrink-0"
+            >
+              {isExporting ? 'Generating student analysis...' : 'Export Student Analysis'}
+            </Button>
+          </div>
+
           {/* SECTION 1: 5 PRIMARY KPI TILES */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
             {/* Tile 1: Student Identity */}

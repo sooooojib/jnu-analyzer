@@ -32,7 +32,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 
   return (
     <div
-      className={`animate-pulse bg-slate-800/60 ${getVariantClass()} ${className}`}
+      className={`animate-pulse bg-slate-200 dark:bg-slate-800/60 ${getVariantClass()} ${className}`}
       style={style}
     />
   );
@@ -53,7 +53,7 @@ export const ScorecardSkeleton: React.FC = () => {
       </div>
 
       {/* Table skeleton */}
-      <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-4">
+      <div className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
         <Skeleton className="h-6 w-48" />
         <div className="space-y-2">
           <Skeleton className="h-10 w-full" />

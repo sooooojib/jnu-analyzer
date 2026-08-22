@@ -68,24 +68,26 @@ export const DatasetStatusCard: React.FC<DatasetStatusCardProps> = ({
 
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <Button
-            variant="secondary"
+            variant={isVerified ? "secondary" : "primary"}
             size="md"
             onClick={onProceedToVerification}
-            leftIcon={<Edit3 className="w-4 h-4 text-emerald-400" />}
-            className="w-full sm:w-auto"
+            leftIcon={<Edit3 className="w-4 h-4" />}
+            className="w-full sm:w-auto font-medium"
           >
-            Verify & Edit Data
+            {isVerified ? "Review Tabulation Matrix" : "Verify & Unlock Analytics"}
           </Button>
 
-          <Button
-            variant={isVerified ? "primary" : "secondary"}
-            size="md"
-            onClick={onProceedToScorecard}
-            rightIcon={<ArrowRight className="w-4 h-4" />}
-            className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold"
-          >
-            Explore Students →
-          </Button>
+          {isVerified && (
+            <Button
+              variant="primary"
+              size="md"
+              onClick={onProceedToScorecard}
+              rightIcon={<ArrowRight className="w-4 h-4" />}
+              className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold"
+            >
+              Explore Students →
+            </Button>
+          )}
         </div>
       </div>
 

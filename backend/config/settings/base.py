@@ -45,6 +45,7 @@ LOCAL_APPS = [
     'apps.upload',
     'apps.processing',
     'apps.dataset',
+    'apps.export',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

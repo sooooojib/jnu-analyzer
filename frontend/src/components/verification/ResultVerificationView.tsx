@@ -172,8 +172,8 @@ export const ResultVerificationView: React.FC<ResultVerificationViewProps> = ({
     return (
       <Card glass className="p-12 text-center space-y-4">
         <div className="w-12 h-12 border-3 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto" />
-        <h3 className="text-lg font-bold text-slate-200">Loading Result Verification Matrix...</h3>
-        <p className="text-sm text-slate-400">Assembling spatial token grids and tabulation sheet records.</p>
+        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Loading Result Verification Matrix...</h3>
+        <p className="text-sm text-slate-600 dark:text-slate-400">Assembling spatial token grids and tabulation sheet records.</p>
       </Card>
     );
   }

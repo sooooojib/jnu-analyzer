@@ -27,7 +27,8 @@ import {
   BarChart2,
   Users,
   CheckSquare,
-  LayoutDashboard
+  LayoutDashboard,
+  Lock
 } from 'lucide-react';
 
 export type AppTabType = 'upload' | 'verify' | 'result' | 'statistics' | 'comparison';
@@ -37,6 +38,9 @@ export const App: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [activeSession, setActiveSession] = useState<UploadSuccessData | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Verification status gating (Next stages 3, 4, and 5 are strictly locked until verified)
+  const isAnalyticsUnlocked = activeSession?.status === 'VERIFIED' || activeSession?.status === 'COMPLETED';
 
   // Persistent Student & Comparison State (preserved across tab navigation until dataset cleared)
   const [persistentStudentId, setPersistentStudentId] = useState<string>(() => {
@@ -114,7 +118,11 @@ export const App: React.FC = () => {
 
   const handleStartComparison = (idA: string, idB: string) => {
     handleComparisonStudentsChange(idA, idB);
-    setActiveTab('comparison');
+    if (isAnalyticsUnlocked) {
+      setActiveTab('comparison');
+    } else {
+      setActiveTab('verify');
+    }
   };
 
   const navigationTabs = (
@@ -145,10 +153,13 @@ export const App: React.FC = () => {
       <Button
         variant={activeTab === 'result' ? 'primary' : 'ghost'}
         size="sm"
-        onClick={() => setActiveTab('result')}
-        disabled={!activeSession}
-        leftIcon={<LayoutDashboard className="w-4 h-4 shrink-0" />}
-        className="shrink-0 text-xs sm:text-sm px-2 sm:px-3"
+        onClick={() => {
+          if (isAnalyticsUnlocked) setActiveTab('result');
+        }}
+        disabled={!isAnalyticsUnlocked}
+        title={!isAnalyticsUnlocked ? 'Locked: Click "Confirm & Unlock Full Analytics" in Tabulation Matrix to access' : undefined}
+        leftIcon={!isAnalyticsUnlocked ? <Lock className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-slate-500" /> : <LayoutDashboard className="w-4 h-4 shrink-0" />}
+        className={`shrink-0 text-xs sm:text-sm px-2 sm:px-3 transition-opacity ${!isAnalyticsUnlocked ? 'opacity-50 cursor-not-allowed text-slate-400 dark:text-slate-500' : ''}`}
       >
         <span className="hidden sm:inline">3. Student Result</span>
         <span className="sm:hidden">3</span>
@@ -157,10 +168,13 @@ export const App: React.FC = () => {
       <Button
         variant={activeTab === 'statistics' ? 'primary' : 'ghost'}
         size="sm"
-        onClick={() => setActiveTab('statistics')}
-        disabled={!activeSession}
-        leftIcon={<BarChart2 className="w-4 h-4 shrink-0" />}
-        className="shrink-0 text-xs sm:text-sm px-2 sm:px-3"
+        onClick={() => {
+          if (isAnalyticsUnlocked) setActiveTab('statistics');
+        }}
+        disabled={!isAnalyticsUnlocked}
+        title={!isAnalyticsUnlocked ? 'Locked: Click "Confirm & Unlock Full Analytics" in Tabulation Matrix to access' : undefined}
+        leftIcon={!isAnalyticsUnlocked ? <Lock className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-slate-500" /> : <BarChart2 className="w-4 h-4 shrink-0" />}
+        className={`shrink-0 text-xs sm:text-sm px-2 sm:px-3 transition-opacity ${!isAnalyticsUnlocked ? 'opacity-50 cursor-not-allowed text-slate-400 dark:text-slate-500' : ''}`}
       >
         <span className="hidden sm:inline">4. Class Statistics</span>
         <span className="sm:hidden">4</span>
@@ -169,10 +183,13 @@ export const App: React.FC = () => {
       <Button
         variant={activeTab === 'comparison' ? 'primary' : 'ghost'}
         size="sm"
-        onClick={() => setActiveTab('comparison')}
-        disabled={!activeSession}
-        leftIcon={<Users className="w-4 h-4 shrink-0" />}
-        className="shrink-0 text-xs sm:text-sm px-2 sm:px-3"
+        onClick={() => {
+          if (isAnalyticsUnlocked) setActiveTab('comparison');
+        }}
+        disabled={!isAnalyticsUnlocked}
+        title={!isAnalyticsUnlocked ? 'Locked: Click "Confirm & Unlock Full Analytics" in Tabulation Matrix to access' : undefined}
+        leftIcon={!isAnalyticsUnlocked ? <Lock className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-slate-500" /> : <Users className="w-4 h-4 shrink-0" />}
+        className={`shrink-0 text-xs sm:text-sm px-2 sm:px-3 transition-opacity ${!isAnalyticsUnlocked ? 'opacity-50 cursor-not-allowed text-slate-400 dark:text-slate-500' : ''}`}
       >
         <span className="hidden sm:inline">5. Compare Students</span>
         <span className="sm:hidden">5</span>

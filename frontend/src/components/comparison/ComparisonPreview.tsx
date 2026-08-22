@@ -10,7 +10,8 @@ import {
   Scale,
   UserCheck,
   Minus,
-  BookOpen
+  BookOpen,
+  Download
 } from 'lucide-react';
 
 interface ComparisonPreviewProps {
@@ -30,6 +31,8 @@ export const ComparisonPreview: React.FC<ComparisonPreviewProps> = ({
   const [studentBInput, setStudentBInput] = useState(defaultStudentB);
   const [comparison, setComparison] = useState<StudentComparisonResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Sync state if defaultStudentA / defaultStudentB props update
@@ -117,6 +120,32 @@ export const ComparisonPreview: React.FC<ComparisonPreviewProps> = ({
     }
   };
 
+  const handleExportComparisonPdf = async () => {
+    if (!sessionId || !comparison) return;
+    setIsExporting(true);
+    setExportMessage(null);
+    try {
+      const blob = await api.exportComparisonPdf(sessionId, comparison.student_a.id, comparison.student_b.id);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const safeA = comparison.student_a.id.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const safeB = comparison.student_b.id.replace(/[^a-zA-Z0-9_-]/g, '_');
+      a.download = `JNU_Comparison_${safeA}_vs_${safeB}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      setExportMessage('Comparison exported successfully.');
+      setTimeout(() => setExportMessage(null), 4000);
+    } catch (err: any) {
+      console.error('Comparison export failed', err);
+      setExportMessage('Failed to export comparison report. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Search Input Bar */}
@@ -175,6 +204,17 @@ export const ComparisonPreview: React.FC<ComparisonPreviewProps> = ({
         />
       )}
 
+      {/* Export Feedback Banner */}
+      {exportMessage && (
+        <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center justify-between animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>{exportMessage}</span>
+          </div>
+          <button type="button" onClick={() => setExportMessage(null)} className="text-emerald-500 hover:text-emerald-700 font-bold ml-2">✕</button>
+        </div>
+      )}
+
       {/* Empty State */}
       {!comparison && !isLoading && !errorMessage && (
         <Card className="p-12 text-center bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center space-y-4">
@@ -192,6 +232,35 @@ export const ComparisonPreview: React.FC<ComparisonPreviewProps> = ({
 
       {comparison && (
         <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Header & Export Action */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-3.5 sm:p-4 rounded-2xl shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
+                <Scale className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <span>Head-to-Head Comparison</span>
+                  <Badge variant="blue" size="sm" className="font-mono">{comparison.course_comparison.length} Courses</Badge>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {comparison.student_a.name} ({comparison.student_a.id}) vs {comparison.student_b.name} ({comparison.student_b.id})
+                </p>
+              </div>
+            </div>
+
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleExportComparisonPdf}
+              isLoading={isExporting}
+              leftIcon={<Download className="w-4 h-4 text-sky-600 dark:text-sky-400" />}
+              className="w-full sm:w-auto font-medium border-slate-200 dark:border-slate-700/80 hover:border-sky-500/40 shrink-0"
+            >
+              {isExporting ? 'Generating comparison...' : 'Export Comparison'}
+            </Button>
+          </div>
+
           {/* Side-by-Side Identity Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Student A Card */}
