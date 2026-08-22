@@ -177,7 +177,8 @@ class ClaudePromptView(APIView):
             "1. Header Metadata: Extract the exact University/Institution Name, Faculty, Department, Degree/Program, Semester/Year, Session/Batch, and Total Semester Credits from the sheet header.\n"
             "2. Course Detection: Extract ALL courses present on the sheet, noting Course Code, Course Title, and Credit Hours in the bulleted Course List (e.g. `- [CSE-1101]: Structured Programming (Credit: 3.00)`).\n"
             "3. Multi-Page Merging: If multiple photos/pages are uploaded, extract EVERY single student across Page 1, Page 2, Page 3, etc., and merge all student rows sequentially sorted by Serial Number (S/N) or Student ID into ONE continuous table. Do NOT skip or truncate any student rows.\n"
-            "4. Semester 1.1 / 1st Semester Rule: For 1st Year 1st Semester (Semester 1.1 / first exam), the Current Semester GPA is identical to the Cumulative CGPA (CGPA = GPA) because it is the only examination that has taken place. Always populate both GPA and CGPA columns (if the sheet only prints GPA, duplicate that GPA value into the CGPA column, and Total Semester Credits into the Cumulative Credits column).\n\n"
+            "4. Semester 1.1 / 1st Semester Rule: For 1st Year 1st Semester (Semester 1.1 / first exam), the Current Semester GPA is identical to the Cumulative CGPA (CGPA = GPA) because it is the only examination that has taken place. Always populate both GPA and CGPA columns (if the sheet only prints GPA, duplicate that GPA value into the CGPA column, and Total Semester Credits into the Cumulative Credits column).\n"
+            "5. Strict Row Alignment & ID Cross-Verification: You MUST double-check each Student ID against that specific person's exact Name, Serial Number, and course marks from the image. Ensure the Student ID, Student Name, Course Grades, and GPA strictly correspond to the same horizontal row from the sheet — NEVER shift, swap, transpose, or misalign any student's ID or results with neighboring rows.\n\n"
             "Output strictly in clean Markdown format with the exact structure below:\n\n"
             "# Academic Result Sheet\n"
             "- **Institution**: [Extracted Institution Name, e.g. Jagannath University]\n"
@@ -196,9 +197,9 @@ class ClaudePromptView(APIView):
             "### Strict Output Constraints:\n"
             "- CRITICAL: Output ONLY the clean Markdown document starting directly with `# Academic Result Sheet`.\n"
             "- Do NOT write any conversational intro (e.g. 'Here is your extracted table...'), notes, apologies, or trailing comments.\n"
+            "- Student ID & Name Fidelity: Double-check that every Student ID is 100% matched with the correct student name and row on the sheet. Keep complete original Student ID format without truncation.\n"
             "- Grade Points (GP): Normalize to 2 decimal places (e.g. 4.00, 3.75, 3.50, 3.25, 3.00, 2.75, 2.50, 2.25, 2.00, 0.00).\n"
             "- Letter Grades (LG): Exact grades (A+, A, A-, B+, B, B-, C+, C, D, F).\n"
-            "- Student IDs: Keep original university student ID format without truncation.\n"
             "- Output pure raw Markdown so it can be parsed instantly by the analyzer."
         )
         return success_response(
