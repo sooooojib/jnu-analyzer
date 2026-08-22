@@ -486,7 +486,7 @@ class MarkdownSheetParser:
                 review_reasons=res_review,
             ))
 
-        # 5. Compute or extract GPA
+        # 5. Compute or extract GPA & Total GP
         calc_gpa = None
         if total_course_credits > Decimal("0.00"):
             calc_gpa = (total_grade_points / total_course_credits).quantize(Decimal("0.01"))
@@ -501,7 +501,19 @@ class MarkdownSheetParser:
             except (InvalidOperation, ValueError):
                 pass
 
-        final_gpa = calc_gpa if calc_gpa is not None else extracted_gpa
+        tgp_idx = col_mapping.get("tgp_idx")
+        extracted_tgp = None
+        if tgp_idx is not None and tgp_idx < len(cells):
+            try:
+                clean_tgp = re.sub(r"[^\d.]", "", cells[tgp_idx])
+                if clean_tgp:
+                    extracted_tgp = Decimal(clean_tgp)
+            except (InvalidOperation, ValueError):
+                pass
+
+        # Official extracted GPA from result sheet takes precedence
+        final_gpa = extracted_gpa if extracted_gpa is not None else calc_gpa
+        final_tgp = extracted_tgp if extracted_tgp is not None else total_grade_points
 
         # 6. Cumulative CGPA & Cumulative Credits
         cgpa_idx = col_mapping.get("cgpa_idx")
@@ -540,9 +552,9 @@ class MarkdownSheetParser:
         # 8. Summaries
         curr_summary = ParsedCurrentSemesterSummary(
             gpa=final_gpa,
-            gpa_raw=str(extracted_gpa or final_gpa or ""),
-            grade_points=total_grade_points,
-            grade_points_raw=str(total_grade_points),
+            gpa_raw=str(extracted_gpa if extracted_gpa is not None else (final_gpa or "")),
+            grade_points=final_tgp,
+            grade_points_raw=str(extracted_tgp if extracted_tgp is not None else final_tgp),
             earned_credit=earned_credits,
             earned_credit_raw=str(earned_credits),
             total_credit=total_course_credits,
