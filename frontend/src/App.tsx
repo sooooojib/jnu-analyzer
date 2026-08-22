@@ -27,11 +27,10 @@ import {
   BarChart2,
   Users,
   CheckSquare,
-  LayoutDashboard,
-  BookOpen
+  LayoutDashboard
 } from 'lucide-react';
 
-export type AppTabType = 'upload' | 'verify' | 'result' | 'statistics' | 'subjects' | 'comparison';
+export type AppTabType = 'upload' | 'verify' | 'result' | 'statistics' | 'comparison';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AppTabType>('upload');
@@ -168,18 +167,6 @@ export const App: React.FC = () => {
       </Button>
 
       <Button
-        variant={activeTab === 'subjects' ? 'primary' : 'ghost'}
-        size="sm"
-        onClick={() => setActiveTab('subjects')}
-        disabled={!activeSession}
-        leftIcon={<BookOpen className="w-4 h-4 shrink-0" />}
-        className="shrink-0 text-xs sm:text-sm px-2 sm:px-3"
-      >
-        <span className="hidden sm:inline">5. Subject Analysis</span>
-        <span className="sm:hidden">5</span>
-      </Button>
-
-      <Button
         variant={activeTab === 'comparison' ? 'primary' : 'ghost'}
         size="sm"
         onClick={() => setActiveTab('comparison')}
@@ -187,8 +174,8 @@ export const App: React.FC = () => {
         leftIcon={<Users className="w-4 h-4 shrink-0" />}
         className="shrink-0 text-xs sm:text-sm px-2 sm:px-3"
       >
-        <span className="hidden sm:inline">6. Compare Students</span>
-        <span className="sm:hidden">6</span>
+        <span className="hidden sm:inline">5. Compare Students</span>
+        <span className="sm:hidden">5</span>
       </Button>
     </nav>
   );
@@ -286,8 +273,7 @@ export const App: React.FC = () => {
             initialStudentId={persistentStudentId}
             onStudentChange={handleStudentChange}
             onNavigateToTab={(tab: string) => {
-              if (tab === 'analytics' || tab === 'statistics') setActiveTab('statistics');
-              else if (tab === 'subjects') setActiveTab('subjects');
+              if (tab === 'analytics' || tab === 'statistics' || tab === 'subjects') setActiveTab('statistics');
               else if (tab === 'comparison') setActiveTab('comparison');
               else if (tab === 'verify') setActiveTab('verify');
               else setActiveTab('result');
@@ -305,16 +291,7 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Tab 5: Subject Analysis */}
-        {activeTab === 'subjects' && (
-          <AnalyticsPreview
-            sessionId={activeSession?.id}
-            initialStudentId={persistentStudentId}
-            initialView="subjects"
-          />
-        )}
-
-        {/* Tab 6: 2-Student Comparison */}
+        {/* Tab 5: 2-Student Comparison */}
         {activeTab === 'comparison' && (
           <ComparisonPreview
             sessionId={activeSession?.id}
