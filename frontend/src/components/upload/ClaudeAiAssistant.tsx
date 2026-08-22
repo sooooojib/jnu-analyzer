@@ -89,8 +89,9 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
           "Please perform comprehensive tabular data extraction across ALL provided pages and merge them into a single, complete Markdown document.\n\n" +
           "### Extraction Instructions:\n" +
           "1. Header Metadata: Extract University/Institution Name, Faculty, Department, Degree/Program, Semester/Year, Session/Batch, and Total Semester Credits.\n" +
-          "2. Course Detection: Extract ALL courses present on the sheet, noting Course Code, Course Title, and Credit Hours.\n" +
-          "3. Multi-Page Merging: If multiple photos/pages are uploaded, extract EVERY single student across Page 1, Page 2, Page 3, etc., and merge all rows sequentially sorted by Serial Number (S/N) or Student ID into ONE continuous table.\n\n" +
+          "2. Course Detection: Extract ALL courses present on the sheet, noting Course Code, Course Title, and Credit Hours in the bulleted Course List (e.g. `- [CSE-1101]: Structured Programming (Credit: 3.00)`).\n" +
+          "3. Multi-Page Merging: If multiple photos/pages are uploaded, extract EVERY single student across Page 1, Page 2, Page 3, etc., and merge all rows sequentially sorted by Serial Number (S/N) or Student ID into ONE continuous table.\n" +
+          "4. Semester 1.1 / 1st Semester Rule: For 1st Year 1st Semester (Semester 1.1 / first exam), the Current Semester GPA is identical to the Cumulative CGPA (CGPA = GPA) because it is the only examination that has taken place. Always populate both GPA and CGPA columns (if the sheet only prints GPA, duplicate that GPA value into the CGPA column, and Total Semester Credits into the Cumulative Credits column).\n\n" +
           "### Strict Output Constraints:\n" +
           "- CRITICAL: Output ONLY the clean Markdown document starting directly with `# Academic Result Sheet`.\n" +
           "- Do NOT write any conversational intro, greetings, explanations, or trailing commentary.\n" +
@@ -111,7 +112,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
           "...\n\n" +
           "| S/N | Student ID | Student Name | [CODE_1] GP | [CODE_1] LG | [CODE_2] GP | [CODE_2] LG | ... | Total GP | GPA | Cumulative Credits | CGPA | Result Status |\n" +
           "|---|---|---|---|---|---|---|---|---|---|---|---|---|\n" +
-          "| 1 | [ID 1] | [Name 1] | 4.00 | A+ | 3.75 | A | ... | 78.50 | 3.85 | 40.00 | 3.72 | P |\n"
+          "| 1 | [ID 1] | [Name 1] | 4.00 | A+ | 3.75 | A | ... | 78.50 | 3.85 | 21.50 | 3.85 | P |\n"
         );
       });
   }, []);

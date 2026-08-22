@@ -503,7 +503,7 @@ class MarkdownSheetParser:
 
         final_gpa = calc_gpa if calc_gpa is not None else extracted_gpa
 
-        # 6. Cumulative CGPA
+        # 6. Cumulative CGPA & Cumulative Credits
         cgpa_idx = col_mapping.get("cgpa_idx")
         extracted_cgpa = None
         if cgpa_idx is not None and cgpa_idx < len(cells):
@@ -513,6 +513,24 @@ class MarkdownSheetParser:
                     extracted_cgpa = Decimal(clean_cgpa)
             except (InvalidOperation, ValueError):
                 pass
+
+        cum_credits_idx = col_mapping.get("cum_credits_idx")
+        extracted_cum_credits = None
+        if cum_credits_idx is not None and cum_credits_idx < len(cells):
+            try:
+                clean_cum_cr = re.sub(r"[^\d.]", "", cells[cum_credits_idx])
+                if clean_cum_cr:
+                    extracted_cum_credits = Decimal(clean_cum_cr)
+            except (InvalidOperation, ValueError):
+                pass
+
+        # 1st Semester / 1.1 Special Rule:
+        # If CGPA is omitted on the sheet (common in 1.1 first exams), CGPA is identical to GPA
+        # and Cumulative Credits equals Semester Credits.
+        if extracted_cgpa is None and final_gpa is not None:
+            extracted_cgpa = final_gpa
+        if extracted_cum_credits is None:
+            extracted_cum_credits = earned_credits if earned_credits > Decimal("0.00") else total_course_credits
 
         # 7. Result Status (P / CP / NP / F)
         status_idx = col_mapping.get("status_idx")
@@ -538,6 +556,10 @@ class MarkdownSheetParser:
             cum_summary = ParsedCumulativeSummary(
                 cgpa=extracted_cgpa,
                 cgpa_raw=str(extracted_cgpa),
+                total_credit=extracted_cum_credits,
+                total_credit_raw=str(extracted_cum_credits or ""),
+                earned_credit=earned_credits,
+                earned_credit_raw=str(earned_credits),
             )
 
         return ParsedStudent(
