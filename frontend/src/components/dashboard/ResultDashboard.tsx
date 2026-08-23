@@ -433,11 +433,11 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
             </Card>
           </div>
 
-          {/* DASHBOARD NAVIGATION PILLS */}
-          <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800/80 pt-2 pb-3 px-1 text-xs overflow-x-auto">
+          {/* DASHBOARD NAVIGATION PILLS (Horizontal Smooth Scroll on Small Screens) */}
+          <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800/80 pt-2 pb-3 px-1 overflow-x-auto scrollbar-none text-xs">
             <button
               onClick={() => setActiveSection('overview')}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                 activeSection === 'overview'
                   ? 'bg-emerald-600 text-white dark:bg-emerald-500/20 dark:text-emerald-300 dark:border dark:border-emerald-500/30 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
@@ -449,7 +449,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
 
             <button
               onClick={() => setActiveSection('subjects')}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                 activeSection === 'subjects'
                   ? 'bg-emerald-600 text-white dark:bg-emerald-500/20 dark:text-emerald-300 dark:border dark:border-emerald-500/30 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
@@ -461,7 +461,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
 
             <button
               onClick={() => setActiveSection('cohort_stats')}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                 activeSection === 'cohort_stats'
                   ? 'bg-emerald-600 text-white dark:bg-emerald-500/20 dark:text-emerald-300 dark:border dark:border-emerald-500/30 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
