@@ -3,7 +3,6 @@ import { Card } from '../common/Card';
 import { Badge } from '../common/Badge';
 import { Button } from '../common/Button';
 import { Alert } from '../common/Alert';
-import { Tooltip } from '../common/Tooltip';
 import { ScorecardSkeleton } from '../common/Skeleton';
 import { api } from '../../api/endpoints';
 import { StudentRecord } from '../../types/student';
@@ -15,10 +14,9 @@ import {
   Users, 
   Trophy, 
   Search, 
-  GraduationCap,
+  GraduationCap, 
   Scale, 
-  Info,
-  Download,
+  Download, 
   X
 } from 'lucide-react';
 
@@ -342,12 +340,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
             <Card className="p-4 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm">
               <div>
                 <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                  <span className="flex items-center gap-1 font-sans">
-                    Semester GPA
-                    <Tooltip content="Current semester grade point average (Credit-weighted)">
-                      <Info className="w-3 h-3 text-slate-400 cursor-help" />
-                    </Tooltip>
-                  </span>
+                  <span className="font-sans">Semester GPA</span>
                   <Badge variant="emerald" size="sm">{student.semester_result.result_status || 'PASSED'}</Badge>
                 </div>
                 <div className="flex items-baseline gap-2">
@@ -368,12 +361,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
             <Card className="p-4 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm">
               <div>
                 <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                  <span className="flex items-center gap-1 font-sans">
-                    Semester Rank
-                    <Tooltip content="Standard Competition Rank (1224 rule) in current sheet">
-                      <Info className="w-3 h-3 text-slate-400 cursor-help" />
-                    </Tooltip>
-                  </span>
+                  <span className="font-sans">Semester Rank</span>
                   <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                 </div>
                 <div className="text-2xl sm:text-3xl font-black font-mono text-amber-600 dark:text-amber-400">
@@ -389,12 +377,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
             <Card className="p-4 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm">
               <div>
                 <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                  <span className="flex items-center gap-1 font-sans">
-                    Cumulative CGPA
-                    <Tooltip content="Extracted cumulative CGPA from tabulation sheet">
-                      <Info className="w-3 h-3 text-slate-400 cursor-help" />
-                    </Tooltip>
-                  </span>
+                  <span className="font-sans">Cumulative CGPA</span>
                   <Badge variant="blue" size="sm">{student.cumulative_result.result_status || 'PASSED'}</Badge>
                 </div>
                 <div className="flex items-baseline gap-2">
@@ -415,12 +398,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
             <Card className="p-4 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm">
               <div>
                 <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                  <span className="flex items-center gap-1 font-sans">
-                    Cumulative Rank
-                    <Tooltip content="Cumulative rank calculated across cohort">
-                      <Info className="w-3 h-3 text-slate-400 cursor-help" />
-                    </Tooltip>
-                  </span>
+                  <span className="font-sans">Cumulative Rank</span>
                   <Award className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
                 </div>
                 <div className="text-2xl sm:text-3xl font-black font-mono text-sky-600 dark:text-sky-400">
@@ -525,12 +503,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                         <th className="px-5 py-3.5 whitespace-nowrap min-w-[180px]">Course Title</th>
                         <th className="px-5 py-3.5 text-center whitespace-nowrap min-w-[90px]">Credit Hours</th>
                         <th className="px-5 py-3.5 text-center whitespace-nowrap min-w-[120px]">
-                          <span className="flex items-center justify-center gap-1">
-                            Grade Point (GP)
-                            <Tooltip content="Single-subject GP (0.00 – 4.00)">
-                              <Info className="w-3 h-3 text-slate-400 cursor-help" />
-                            </Tooltip>
-                          </span>
+                          Grade Point (GP)
                         </th>
                         <th className="px-5 py-3.5 text-center whitespace-nowrap min-w-[100px]">Letter Grade</th>
                         <th className="px-5 py-3.5 text-center whitespace-nowrap min-w-[100px]">Subject Rank</th>
