@@ -1,7 +1,14 @@
+export interface DistributionStudent {
+  student_id: string;
+  student_name: string;
+  gpa: number;
+}
+
 export interface MetricDistributionItem {
   bracket: string;
   count: number;
   percentage: number;
+  students?: DistributionStudent[];
 }
 
 export interface ClassAnalysis {

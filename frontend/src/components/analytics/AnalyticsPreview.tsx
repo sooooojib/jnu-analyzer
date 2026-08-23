@@ -5,6 +5,7 @@ import { Button } from '../common/Button';
 import { Alert } from '../common/Alert';
 import { api } from '../../api/endpoints';
 import { CohortAnalytics, SubjectAnalysisItem } from '../../types/analytics';
+import { GPADistributionChart } from '../charts/GPADistributionChart';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -547,31 +548,16 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
             </Card>
           </div>
 
-          <Card glass className="p-6 border-slate-200 dark:border-slate-800">
-            <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              Current Semester GPA Distribution
-            </h4>
-
-            <div className="space-y-3.5">
-              {classData.distribution.map((d) => (
-                <div key={d.bracket}>
-                  <div className="flex justify-between text-xs text-slate-700 dark:text-slate-300 mb-1">
-                    <span>{d.bracket}</span>
-                    <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                      {d.count} {d.count === 1 ? 'student' : 'students'} ({d.percentage}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-950 overflow-hidden border border-slate-200 dark:border-slate-800/80">
-                    <div
-                      className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.max(d.percentage > 0 ? 3 : 0, d.percentage)}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
+          {classData.distribution && (
+            <GPADistributionChart
+              distribution={classData.distribution}
+              classMeanGPA={classData.average_gpa}
+              classMedianGPA={classData.median_gpa}
+              totalStudents={classData.total_students}
+              title="Class GPA Distribution (Current Semester)"
+              metricLabel="Current-Semester GPA"
+            />
+          )}
         </div>
       )}
 
@@ -622,31 +608,16 @@ export const AnalyticsPreview: React.FC<AnalyticsPreviewProps> = ({
             </Card>
           </div>
 
-          <Card glass className="p-6 border-slate-200 dark:border-slate-800">
-            <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
-              <Layers className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-              Cumulative CGPA Distribution (Extracted Directly From Sheet)
-            </h4>
-
-            <div className="space-y-3.5">
-              {cumulativeData.distribution.map((d) => (
-                <div key={d.bracket}>
-                  <div className="flex justify-between text-xs text-slate-700 dark:text-slate-300 mb-1">
-                    <span>{d.bracket}</span>
-                    <span className="font-mono text-sky-600 dark:text-sky-400 font-bold">
-                      {d.count} {d.count === 1 ? 'student' : 'students'} ({d.percentage}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-950 overflow-hidden border border-slate-200 dark:border-slate-800/80">
-                    <div
-                      className="h-full bg-sky-500 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.max(d.percentage > 0 ? 3 : 0, d.percentage)}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
+          {cumulativeData.distribution && (
+            <GPADistributionChart
+              distribution={cumulativeData.distribution}
+              classMeanGPA={cumulativeData.average_cgpa}
+              classMedianGPA={cumulativeData.median_cgpa}
+              totalStudents={cumulativeData.total_students}
+              title="Cumulative GPA Distribution (CGPA)"
+              metricLabel="Cumulative GPA (CGPA)"
+            />
+          )}
         </div>
       )}
 

@@ -518,13 +518,13 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                 </div>
 
                 <div className="table-scroll-wrapper overflow-x-auto">
-                  <table className="w-full text-left text-xs min-w-[550px] sm:min-w-full">
+                  <table className="w-full text-left text-xs min-w-[620px]">
                     <thead className="bg-slate-50 dark:bg-slate-950/80 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
                       <tr>
-                        <th className="px-5 py-3.5">Course Code</th>
-                        <th className="px-5 py-3.5">Course Title</th>
-                        <th className="px-5 py-3.5 text-center">Credit Hours</th>
-                        <th className="px-5 py-3.5 text-center">
+                        <th className="px-5 py-3.5 whitespace-nowrap min-w-[120px]">Course Code</th>
+                        <th className="px-5 py-3.5 whitespace-nowrap min-w-[180px]">Course Title</th>
+                        <th className="px-5 py-3.5 text-center whitespace-nowrap min-w-[90px]">Credit Hours</th>
+                        <th className="px-5 py-3.5 text-center whitespace-nowrap min-w-[120px]">
                           <span className="flex items-center justify-center gap-1">
                             Grade Point (GP)
                             <Tooltip content="Single-subject GP (0.00 – 4.00)">
@@ -532,8 +532,8 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                             </Tooltip>
                           </span>
                         </th>
-                        <th className="px-5 py-3.5 text-center">Letter Grade</th>
-                        <th className="px-5 py-3.5 text-center">Subject Rank</th>
+                        <th className="px-5 py-3.5 text-center whitespace-nowrap min-w-[100px]">Letter Grade</th>
+                        <th className="px-5 py-3.5 text-center whitespace-nowrap min-w-[100px]">Subject Rank</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono text-slate-700 dark:text-slate-300">
@@ -541,20 +541,20 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                         const gpVal = cg.grade_point;
                         return (
                           <tr key={cg.course_code || idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                            <td className="px-5 py-3.5 font-bold text-sky-600 dark:text-sky-400">{cg.course_code}</td>
-                            <td className="px-5 py-3.5 font-sans font-medium text-slate-800 dark:text-slate-200">
+                            <td className="px-5 py-3.5 font-bold text-sky-600 dark:text-sky-400 whitespace-nowrap">{cg.course_code}</td>
+                            <td className="px-5 py-3.5 font-sans font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
                               {cg.course_title || cg.course_code}
                             </td>
-                            <td className="px-5 py-3.5 text-center text-slate-500 dark:text-slate-400">{cg.credits.toFixed(1)}</td>
-                            <td className="px-5 py-3.5 text-center font-bold text-slate-900 dark:text-slate-100 text-sm">
+                            <td className="px-5 py-3.5 text-center text-slate-500 dark:text-slate-400 whitespace-nowrap">{cg.credits.toFixed(1)}</td>
+                            <td className="px-5 py-3.5 text-center font-bold text-slate-900 dark:text-slate-100 text-sm whitespace-nowrap">
                               {gpVal !== null ? gpVal.toFixed(2) : '—'}
                             </td>
-                            <td className="px-5 py-3.5 text-center">
+                            <td className="px-5 py-3.5 text-center whitespace-nowrap">
                               <Badge variant={getGradeBadgeVariant(cg.letter_grade)} size="sm">
                                 {cg.letter_grade || '—'}
                               </Badge>
                             </td>
-                            <td className="px-5 py-3.5 text-center">
+                            <td className="px-5 py-3.5 text-center whitespace-nowrap">
                               {cg.subject_rank != null ? (
                                 <Badge variant={cg.subject_rank === 1 ? 'amber' : 'slate'} size="sm">
                                   #{cg.subject_rank}
@@ -590,6 +590,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                 <GPADistributionChart
                   distribution={classData.distribution}
                   selectedStudentGPA={student.semester_result.gpa}
+                  selectedStudentId={student.student_id}
                   classMeanGPA={classData.average_gpa}
                   classMedianGPA={classData.median_gpa}
                   totalStudents={classData.total_students}
@@ -602,6 +603,7 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                 <GPADistributionChart
                   distribution={cumulativeData.distribution}
                   selectedStudentGPA={student.cumulative_result.cgpa}
+                  selectedStudentId={student.student_id}
                   classMeanGPA={cumulativeData.average_cgpa}
                   classMedianGPA={cumulativeData.median_cgpa}
                   totalStudents={cumulativeData.total_students}

@@ -306,16 +306,16 @@ export const ResultVerificationView: React.FC<ResultVerificationViewProps> = ({
       {/* Main Verification Grid */}
       <Card glass className="overflow-hidden border-slate-200 dark:border-slate-800">
         <div className="table-scroll-wrapper overflow-x-auto max-h-[600px] relative">
-          <table className="w-full text-left border-collapse text-xs min-w-[650px] sm:min-w-full">
+          <table className="w-full text-left border-collapse text-xs min-w-[760px]">
             <thead className="sticky top-0 z-20 bg-slate-100 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
               <tr>
-                <th className="py-3.5 px-4">Student ID</th>
-                <th className="py-3.5 px-4">Student Name</th>
-                <th className="py-3.5 px-4">Course</th>
-                <th className="py-3.5 px-3 text-center">Credit</th>
-                <th className="py-3.5 px-3 text-center">GP</th>
-                <th className="py-3.5 px-3 text-center">Letter Grade</th>
-                <th className="py-3.5 px-4 text-right">Audit</th>
+                <th className="py-3.5 px-4 whitespace-nowrap min-w-[120px]">Student ID</th>
+                <th className="py-3.5 px-4 whitespace-nowrap min-w-[180px]">Student Name</th>
+                <th className="py-3.5 px-4 whitespace-nowrap min-w-[120px]">Course</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap min-w-[70px]">Credit</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap min-w-[70px]">GP</th>
+                <th className="py-3.5 px-3 text-center whitespace-nowrap min-w-[100px]">Letter Grade</th>
+                <th className="py-3.5 px-4 text-right whitespace-nowrap min-w-[60px]">Audit</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono">
@@ -338,7 +338,7 @@ export const ResultVerificationView: React.FC<ResultVerificationViewProps> = ({
                       className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
                     >
                       {/* Student ID */}
-                      <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-slate-100">
+                      <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                         {editingCellKey === idKey ? (
                           <input
                             ref={editInputRef}
@@ -365,7 +365,7 @@ export const ResultVerificationView: React.FC<ResultVerificationViewProps> = ({
                       </td>
 
                       {/* Student Name */}
-                      <td className="py-2.5 px-4 font-sans text-slate-700 dark:text-slate-300">
+                      <td className="py-2.5 px-4 font-sans text-slate-700 dark:text-slate-300 whitespace-nowrap">
                         {editingCellKey === nameKey ? (
                           <input
                             ref={editInputRef}
@@ -392,19 +392,19 @@ export const ResultVerificationView: React.FC<ResultVerificationViewProps> = ({
                       </td>
 
                       {/* Course Code */}
-                      <td className="py-2.5 px-4 text-slate-700 dark:text-slate-300 font-bold">
-                        <span className="bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded text-sky-600 dark:text-sky-400 border border-slate-200 dark:border-slate-700/60">
+                      <td className="py-2.5 px-4 text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap">
+                        <span className="bg-slate-100 dark:bg-slate-800/80 px-2.5 py-0.5 rounded text-sky-600 dark:text-sky-400 border border-slate-200 dark:border-slate-700/60 font-mono font-bold whitespace-nowrap inline-block text-[11px]">
                           {row.course_code}
                         </span>
                       </td>
 
                       {/* Credit */}
-                      <td className="py-2.5 px-3 text-center text-slate-500 dark:text-slate-400">
+                      <td className="py-2.5 px-3 text-center text-slate-500 dark:text-slate-400 whitespace-nowrap">
                         {Number(row.credit_hours).toFixed(2)}
                       </td>
 
                       {/* GP (Grade Point) */}
-                      <td className="py-2.5 px-3 text-center">
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap">
                         {editingCellKey === gpKey ? (
                           <input
                             ref={editInputRef}
@@ -431,7 +431,7 @@ export const ResultVerificationView: React.FC<ResultVerificationViewProps> = ({
                       </td>
 
                       {/* Letter Grade */}
-                      <td className="py-2.5 px-3 text-center">
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap">
                         {editingCellKey === lgKey ? (
                           <input
                             ref={editInputRef}
@@ -458,7 +458,7 @@ export const ResultVerificationView: React.FC<ResultVerificationViewProps> = ({
                       </td>
 
                       {/* Audit Details Trigger */}
-                      <td className="py-2.5 px-4 text-right">
+                      <td className="py-2.5 px-4 text-right whitespace-nowrap">
                         <button
                           onClick={() => setActiveAuditRow(row)}
                           className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-1"

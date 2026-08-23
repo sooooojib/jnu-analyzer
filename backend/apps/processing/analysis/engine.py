@@ -74,38 +74,65 @@ def calculate_descriptive_stats(values: List[float]) -> Dict[str, float]:
     }
 
 
-def compute_distribution_histogram(values: List[float], max_scale: float = 4.0) -> List[Dict[str, Any]]:
+def compute_distribution_histogram(
+    items: Union[List[float], List[Dict[str, Any]]], 
+    max_scale: float = 4.0
+) -> List[Dict[str, Any]]:
     """
     Groups GPA/CGPA/GP values into standard academic brackets.
+    items can be a list of floats, or a list of dicts with keys:
+      - "value": float
+      - "student_id": str (optional)
+      - "student_name": str (optional)
     """
-    if not values:
+    if not items:
         return []
 
-    total = len(values)
+    total = len(items)
     brackets = [
-        {"label": "A+ (4.00)", "min": 4.00, "max": 4.01, "count": 0},
-        {"label": "A (3.75–3.99)", "min": 3.75, "max": 4.00, "count": 0},
-        {"label": "A- (3.50–3.74)", "min": 3.50, "max": 3.75, "count": 0},
-        {"label": "B+ (3.25–3.49)", "min": 3.25, "max": 3.50, "count": 0},
-        {"label": "B (3.00–3.24)", "min": 3.00, "max": 3.25, "count": 0},
-        {"label": "B- (2.75–2.99)", "min": 2.75, "max": 3.00, "count": 0},
-        {"label": "C+ (2.50–2.74)", "min": 2.50, "max": 2.75, "count": 0},
-        {"label": "C (2.25–2.49)", "min": 2.25, "max": 2.50, "count": 0},
-        {"label": "D (2.00–2.24)", "min": 2.00, "max": 2.25, "count": 0},
-        {"label": "F (< 2.00)", "min": 0.00, "max": 2.00, "count": 0},
+        {"label": "A+ (4.00)", "min": 4.00, "max": 4.01, "count": 0, "students": []},
+        {"label": "A (3.75–3.99)", "min": 3.75, "max": 4.00, "count": 0, "students": []},
+        {"label": "A- (3.50–3.74)", "min": 3.50, "max": 3.75, "count": 0, "students": []},
+        {"label": "B+ (3.25–3.49)", "min": 3.25, "max": 3.50, "count": 0, "students": []},
+        {"label": "B (3.00–3.24)", "min": 3.00, "max": 3.25, "count": 0, "students": []},
+        {"label": "B- (2.75–2.99)", "min": 2.75, "max": 3.00, "count": 0, "students": []},
+        {"label": "C+ (2.50–2.74)", "min": 2.50, "max": 2.75, "count": 0, "students": []},
+        {"label": "C (2.25–2.49)", "min": 2.25, "max": 2.50, "count": 0, "students": []},
+        {"label": "D (2.00–2.24)", "min": 2.00, "max": 2.25, "count": 0, "students": []},
+        {"label": "F (< 2.00)", "min": 0.00, "max": 2.00, "count": 0, "students": []},
     ]
 
-    for val in values:
+    for item in items:
+        if isinstance(item, dict):
+            val = float(item["value"])
+            s_id = str(item.get("student_id", "")).strip()
+            s_name = str(item.get("student_name", "")).strip()
+            student_entry = {
+                "student_id": s_id,
+                "student_name": s_name,
+                "gpa": round(val, 2),
+            }
+        else:
+            val = float(item)
+            student_entry = None
+
         for b in brackets:
             if b["min"] <= val < b["max"]:
                 b["count"] += 1
+                if student_entry:
+                    b["students"].append(student_entry)
                 break
+
+    # Sort students in each bracket descending by GPA, then by ID
+    for b in brackets:
+        b["students"].sort(key=lambda x: (-x.get("gpa", 0.0), x.get("student_id", "")))
 
     return [
         {
             "bracket": b["label"],
             "count": b["count"],
             "percentage": round((b["count"] / total) * 100, 1) if total > 0 else 0.0,
+            "students": b["students"],
         }
         for b in brackets
     ]
@@ -249,14 +276,20 @@ class DeterministicAnalysisEngine:
           - Distribution histogram
         """
         semester_gpas: List[float] = []
+        semester_items: List[Dict[str, Any]] = []
         for s in students:
             cur = s.get("current_semester_summary") or {}
             gpa = _safe_float(cur.get("gpa"))
             if gpa is not None:
                 semester_gpas.append(gpa)
+                semester_items.append({
+                    "value": gpa,
+                    "student_id": str(s.get("student_id", "")).strip(),
+                    "student_name": s.get("student_name", "UNKNOWN"),
+                })
 
         stats = calculate_descriptive_stats(semester_gpas)
-        histogram = compute_distribution_histogram(semester_gpas)
+        histogram = compute_distribution_histogram(semester_items)
 
         return {
             "total_students": len(students),
@@ -287,14 +320,20 @@ class DeterministicAnalysisEngine:
           - Cumulative distribution histogram
         """
         cumulative_cgpas: List[float] = []
+        cumulative_items: List[Dict[str, Any]] = []
         for s in students:
             cum = s.get("cumulative_summary") or {}
             cgpa = _safe_float(cum.get("cgpa"))
             if cgpa is not None:
                 cumulative_cgpas.append(cgpa)
+                cumulative_items.append({
+                    "value": cgpa,
+                    "student_id": str(s.get("student_id", "")).strip(),
+                    "student_name": s.get("student_name", "UNKNOWN"),
+                })
 
         stats = calculate_descriptive_stats(cumulative_cgpas)
-        histogram = compute_distribution_histogram(cumulative_cgpas)
+        histogram = compute_distribution_histogram(cumulative_items)
 
         return {
             "total_students": len(students),
