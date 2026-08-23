@@ -197,11 +197,11 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
           </p>
         </div>
 
-        {/* Dark Snippet Container */}
-        <div className="bg-slate-900/90 dark:bg-black/40 border border-slate-700/60 dark:border-white/10 p-2 rounded-xl flex items-center justify-between sm:justify-start gap-3 shadow-inner shrink-0">
-          <div className="flex items-center gap-2 pl-2 pr-1 text-xs font-mono text-slate-400">
-            <Terminal className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span>prompt.txt</span>
+        {/* Theme-Adaptive Snippet Container */}
+        <div className="bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-1.5 sm:p-2 rounded-xl flex items-center justify-between sm:justify-start gap-3 shadow-sm shrink-0">
+          <div className="flex items-center gap-2 pl-2.5 pr-1 text-xs font-mono text-slate-700 dark:text-slate-300">
+            <Terminal className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span className="font-semibold">prompt.txt</span>
           </div>
           <Button
             variant="primary"
