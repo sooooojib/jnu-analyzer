@@ -5,18 +5,14 @@ import {
   Check,
   ExternalLink,
   UploadCloud,
-  FileText,
   X,
   Loader2,
-  Cpu,
   GraduationCap,
   BookOpen,
   Building2,
-  Sliders
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
-import { Card } from '../common/Card';
 import { api } from '../../api/endpoints';
 
 export interface ClaudeAiAssistantProps {
@@ -85,48 +81,43 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
       .catch(() => {
         // Fallback universal prompt
         setPromptText(
-          "You are a world-class academic document tabulation and precision OCR assistant.\n" +
-          "You are provided with one or more scanned or photographed academic tabulation result sheets from a university or college.\n\n" +
-          "Your goal is to inspect the sheet with UTMOST DETAIL and PIXEL-LEVEL PRECISION to extract 100% of the records into a single, flawless, comprehensive Markdown document without skipping any row or column.\n\n" +
+          "You are a world-class academic data extraction and precision OCR engine.\n" +
+          "You are provided with one or more scanned/photographed academic tabulation result sheets from a university.\n\n" +
+          "Your goal is to extract 100% of the records into a single, flawless Markdown document.\n\n" +
           "### Extraction Instructions:\n" +
-          "1. Header Metadata: Extract the exact University/Institution Name, Faculty, Department, Degree/Program, Semester/Year, Session/Batch, and Total Semester Credits from the sheet header.\n" +
-          "2. Course Detection: Extract ALL courses present on the sheet, noting Course Code, Course Title, and Credit Hours in the bulleted Course List (e.g. `- [CSE-1101]: Structured Programming (Credit: 3.00)`).\n" +
-          "3. Multi-Page Merging: If multiple photos/pages are uploaded, extract EVERY single student across Page 1, Page 2, Page 3, etc., and merge all student rows sequentially sorted by Serial Number (S/N) or Student ID into ONE continuous table. Do NOT skip, abbreviate, or truncate any student rows.\n" +
-          "4. Semester 1.1 / 1st Semester Rule: For 1st Year 1st Semester (Semester 1.1 / first exam), the Current Semester GPA is identical to the Cumulative CGPA (CGPA = GPA) because it is the only examination that has taken place. Always populate both GPA and CGPA columns (if the sheet only prints GPA, duplicate that GPA value into the CGPA column, and Total Semester Credits into the Cumulative Credits column).\n" +
-          "5. Strict Row Alignment & ID Cross-Verification: Trace each horizontal row strictly along grid lines from left to right. You MUST double-check each Student ID against that specific person's exact Name, Serial Number, and course marks from the image. Ensure the Student ID, Student Name, Course Grades, and GPA strictly correspond to the same horizontal row from the sheet — NEVER shift, swap, transpose, or misalign any student's ID or results with neighboring rows.\n" +
-          "6. Ambiguity Resolution & Error Self-Correction: If a printed character, digit, or grade is faint, skewed, or ambiguous (e.g. distinguishing '8' vs '3', '6' vs '5', '0' vs '8', 'B' vs '8', 'B+' vs 'B-'), cross-check with the official Grading Scale (GP must match LG) and calculate mathematical consistency (Total GP = sum of Credits × Course GP, GPA = Total GP / Credits). Reconcile and correct any uncertain data before outputting the final table.\n\n" +
-          "### Official Grading Scale (Letter Grade -> Grade Point):\n" +
-          "- A+ = 4.00 (80% and above)\n" +
-          "- A  = 3.75 (75% to <80%)\n" +
-          "- A- = 3.50 (70% to <75%)\n" +
-          "- B+ = 3.25 (65% to <70%)\n" +
-          "- B  = 3.00 (60% to <65%)\n" +
-          "- B- = 2.75 (55% to <60%)\n" +
-          "- C+ = 2.50 (50% to <55%)\n" +
-          "- C  = 2.25 (45% to <50%)\n" +
-          "- D  = 2.00 (40% to <45%)\n" +
-          "- F  = 0.00 (<40% Fail)\n\n" +
-          "### Strict Output Constraints:\n" +
-          "- CRITICAL: Output ONLY the clean Markdown document starting directly with `# Academic Result Sheet`.\n" +
-          "- Do NOT write any conversational intro, greetings, apologies, or trailing commentary.\n" +
-          "- Student ID & Name Fidelity: Double-check that every Student ID is 100% matched with the correct student name and row on the sheet. Keep complete original Student ID format without truncation or dropped leading zeros.\n" +
-          "- Grade Points (GP): Normalize to 2 decimal places (e.g. 4.00, 3.75, 3.50, 3.25, 3.00, 2.75, 2.50, 2.25, 2.00, 0.00).\n" +
-          "- Letter Grades (LG): Exact letter grades (A+, A, A-, B+, B, B-, C+, C, D, F).\n" +
-          "- Output pure raw Markdown table only.\n\n" +
-          "Output strictly in clean Markdown format with the exact structure below:\n\n" +
+          "1. Header Metadata: Extract Institution Name, Department, Semester/Year, Session/Batch, and Total Semester Credit.\n" +
+          "2. Course Detection: Extract all courses present, noting Course Code, Course Title, and Credit Hours in a bulleted list.\n" +
+          "3. Multi-Page Merging: If multiple images are provided of the *same exam*, merge all student rows sequentially by Serial Number (S/N) into ONE continuous table. Do NOT skip any rows. (Note: If images represent different semesters with different courses, generate separate tables).\n" +
+          "4. Strict Row Alignment: Trace each horizontal row strictly. You MUST double-check each Student ID against that specific person's Name and course marks. NEVER shift, swap, or misalign data with neighboring rows.\n" +
+          "5. Column Mapping Rules:\n" +
+          "   - Map the sheet's \"Total Grade Point (TGP)\" (for the current semester) to your output column `Total GP`.\n" +
+          "   - Map the sheet's \"GPA\" or \"Total Grade Point Ave.\" to `GPA`.\n" +
+          "   - Map the sheet's \"Total Credit Point (TCP)\" under Cumulative Results to `Cumulative Credits`.\n" +
+          "   - Map the sheet's \"Comments\" (e.g., P, CP, NP) to `Result Status`.\n" +
+          "6. Missing Data: If a student is completely missing a grade for a course (e.g., absent), output `-` for both GP and LG.\n\n" +
+          "### Official Grading Scale & Verification Rules:\n" +
+          "- A+ = 4.00 | A = 3.75 | A- = 3.50 | B+ = 3.25 | B = 3.00 | B- = 2.75 | C+ = 2.50 | C = 2.25 | D = 2.00 | F = 0.00\n" +
+          "- 1st Semester Rule: If this is 1st Year 1st Semester, GPA always equals CGPA. Populate both columns.\n" +
+          "- Normalize all Grade Points to 2 decimal places (e.g., 4.00, 3.50, 0.00).\n\n" +
+          "### Output Structure & Constraints:\n" +
+          "You must first use an `<analysis_scratchpad>` block to silently verify ambiguous characters, check math for hard-to-read rows, and map the column headers.\n" +
+          "Immediately following the scratchpad, output the exact Markdown format. Do NOT output any conversational text outside of these blocks.\n\n" +
+          "Use this exact output template:\n\n" +
+          "<analysis_scratchpad>\n" +
+          "- Course columns detected: [list courses]\n" +
+          "- Checking ambiguous row S/N X... [brief math check if needed]\n" +
+          "</analysis_scratchpad>\n\n" +
           "# Academic Result Sheet\n" +
-          "- **Institution**: [Extracted Institution Name]\n" +
-          "- **Department**: [Extracted Department Name]\n" +
-          "- **Semester**: [Extracted Semester / Exam Name]\n" +
-          "- **Session / Batch**: [Extracted Session / Batch]\n" +
-          "- **Total Semester Credit**: [e.g. 21.50]\n\n" +
+          "- **Institution**: [Name]\n" +
+          "- **Department**: [Name]\n" +
+          "- **Semester**: [Name]\n" +
+          "- **Session / Batch**: [Name]\n" +
+          "- **Total Semester Credit**: [X.XX]\n\n" +
           "### Course List:\n" +
-          "- [Course Code 1]: [Course Title 1] (Credit: [X.XX])\n" +
-          "- [Course Code 2]: [Course Title 2] (Credit: [X.XX])\n" +
-          "...\n\n" +
+          "- [Course Code]: [Course Title] (Credit: [X.XX])\n\n" +
           "| S/N | Student ID | Student Name | [CODE_1] GP | [CODE_1] LG | [CODE_2] GP | [CODE_2] LG | ... | Total GP | GPA | Cumulative Credits | CGPA | Result Status |\n" +
           "|---|---|---|---|---|---|---|---|---|---|---|---|---|\n" +
-          "| 1 | [ID 1] | [Name 1] | 4.00 | A+ | 3.75 | A | ... | 78.50 | 3.85 | 21.50 | 3.85 | P |\n"
+          "| 1 | [ID] | [Name] | 4.00 | A+ | 3.75 | A | ... | 78.50 | 3.85 | 21.50 | 3.85 | P |\n"
         );
       });
   }, []);
@@ -187,52 +178,53 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
   const detectedCourses = (markdownInput.match(/\|\s*[A-Z]{2,6}[-_]?[0-9]{3,4}[A-Z]?\s*(?:GP|\(GP\)|LG)?/gi) || []).length / 2;
 
   return (
-    <div className="space-y-6">
-      {/* Header Banner */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-emerald-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 dark:border-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5 sm:mt-0">
-            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
+    <div className="space-y-8">
+      {/* STEP 1: Copy Extraction Prompt */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-1">
+        <div className="space-y-1 max-w-2xl">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+              STEP 1
+            </span>
+            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
+              Copy Extraction Prompt
+            </h3>
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                Extract Result Sheet with Vision AI
-              </h3>
-              <Badge variant="emerald" size="sm">
-                Universal: Any Department &amp; Semester
-              </Badge>
-            </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
-              Copy the prompt, open any of the links below (<span className="text-amber-600 dark:text-amber-300 font-semibold">Google AI Studio</span>, <span className="text-sky-600 dark:text-sky-300 font-semibold">Claude</span>, or <span className="text-emerald-600 dark:text-emerald-300 font-semibold">ChatGPT</span>), attach clean, well-lit &amp; neatly cropped photos of your result sheets (with all student rows, course columns &amp; header visible), and paste the generated Markdown table below.
-            </p>
-          </div>
+          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Copy the universal prompt. It instructs AI models to read all student IDs, names, course GPs/LGs, and merge multi-page tabulation sheets into a single Markdown table.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2.5 w-full md:w-auto">
+        <div className="shrink-0">
           <Button
             variant="primary"
             size="sm"
             onClick={handleCopyPrompt}
             leftIcon={isCopied ? <Check className="w-4 h-4 text-white" /> : <Copy className="w-4 h-4" />}
-            className="flex-1 md:flex-none text-xs font-bold px-4 py-2"
+            className="w-full sm:w-auto text-xs font-bold px-4 py-2"
           >
-            {isCopied ? '✓ Prompt Copied to Clipboard!' : 'Copy Extraction Prompt'}
+            {isCopied ? '✓ Prompt Copied!' : 'Copy Extraction Prompt'}
           </Button>
         </div>
       </div>
 
-      {/* AI Vision Studios Link Hub */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
-          <span className="font-semibold text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
-            <Cpu className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-            Recommended Vision AI Studios (Free & Instant):
+      {/* STEP 2: Select Vision AI Studio */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono font-bold text-sky-600 dark:text-sky-400">
+              STEP 2
+            </span>
+            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
+              Choose Vision AI Studio
+            </h3>
+          </div>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline">
+            Attach photo(s) &amp; paste prompt
           </span>
-          <span>Click any studio to open in new tab</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           {aiTools.map((tool, idx) => {
             const isGoogle = tool.name.toLowerCase().includes('google');
             return (
@@ -241,57 +233,34 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
                 href={tool.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`p-4 rounded-2xl transition-all group flex flex-col justify-between space-y-3 relative overflow-hidden ${
+                className={`p-3.5 rounded-xl transition-all group flex flex-col justify-between space-y-2.5 ${
                   isGoogle
-                    ? 'bg-gradient-to-br from-amber-500/10 via-white to-amber-500/5 dark:from-amber-500/15 dark:via-slate-900/90 dark:to-slate-900/90 border-2 border-amber-500/70 dark:border-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.28)] dark:shadow-[0_0_30px_rgba(245,158,11,0.35)] ring-2 ring-amber-500/40 dark:ring-amber-400/60 hover:scale-[1.02] active:scale-[0.99]'
-                    : 'bg-white dark:bg-slate-900/70 hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 dark:hover:border-emerald-500/50 shadow-sm hover:scale-[1.01] active:scale-[0.99]'
+                    ? 'bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 hover:border-amber-500/60 shadow-sm hover:scale-[1.01] active:scale-[0.99]'
+                    : 'bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-slate-200 dark:border-slate-800/80 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 shadow-sm hover:scale-[1.01] active:scale-[0.99]'
                 }`}
               >
-                {/* Glowing ambient light flare */}
-                {isGoogle && (
-                  <div className="absolute -top-10 -right-10 w-28 h-28 bg-amber-500/20 dark:bg-amber-400/25 rounded-full blur-2xl pointer-events-none" />
-                )}
-
-                <div className="space-y-2 relative z-10">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-sm font-bold transition-colors ${isGoogle ? 'text-amber-950 dark:text-amber-300 group-hover:text-amber-600 dark:group-hover:text-amber-200' : 'text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400'}`}>
-                        {tool.name}
-                      </span>
-                      <ExternalLink className={`w-3.5 h-3.5 ${isGoogle ? 'text-amber-500' : 'text-slate-400 group-hover:text-emerald-500'} transition-colors`} />
-                    </div>
-                    {isGoogle ? (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wider bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 flex items-center gap-1 shadow-sm shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping" />
-                        RECOMMENDED
-                      </span>
-                    ) : (
-                      <Badge variant={tool.name.includes('Claude') ? 'blue' : 'emerald'} size="sm">
-                        {tool.badge}
-                      </Badge>
-                    )}
+                    <span className={`text-xs sm:text-sm font-bold ${isGoogle ? 'text-amber-950 dark:text-amber-300' : 'text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400'}`}>
+                      {tool.name}
+                    </span>
+                    <Badge variant={isGoogle ? 'amber' : tool.name.includes('Claude') ? 'blue' : 'emerald'} size="sm">
+                      {tool.badge}
+                    </Badge>
                   </div>
 
-                  <div className={`text-[11px] font-mono font-bold ${isGoogle ? 'text-amber-600 dark:text-amber-400' : 'text-sky-600 dark:text-sky-400'}`}>
+                  <div className={`text-[11px] font-mono font-medium ${isGoogle ? 'text-amber-600 dark:text-amber-400' : 'text-sky-600 dark:text-sky-400'}`}>
                     {tool.model}
                   </div>
 
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
                     {tool.description}
                   </p>
-
-                  {/* Setting instruction for Google AI Studio */}
-                  {isGoogle && (
-                    <div className="mt-2.5 p-2 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30 text-[11px] text-amber-800 dark:text-amber-200 font-semibold flex items-start gap-1.5">
-                      <Sliders className="w-3.5 h-3.5 shrink-0 text-amber-500 dark:text-amber-400 mt-0.5 animate-pulse" />
-                      <span>In Settings: Select <strong>3.1 Pro</strong> or <strong>Pro (Latest)</strong> for best OCR</span>
-                    </div>
-                  )}
                 </div>
 
-                <div className={`pt-2 border-t ${isGoogle ? 'border-amber-500/30 text-amber-900 dark:text-amber-300 font-bold' : 'border-slate-100 dark:border-slate-800/60 text-slate-700 dark:text-slate-300 font-semibold'} flex items-center justify-between text-[11px] relative z-10`}>
-                  <span>Launch {tool.name}</span>
-                  <span className={`${isGoogle ? 'text-amber-500' : 'text-emerald-500'} group-hover:translate-x-1 transition-transform`}>→</span>
+                <div className={`pt-2 border-t ${isGoogle ? 'border-amber-500/20 text-amber-900 dark:text-amber-300' : 'border-slate-100 dark:border-slate-800/60 text-slate-600 dark:text-slate-400'} flex items-center justify-between text-[11px] font-medium`}>
+                  <span>Open studio</span>
+                  <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </a>
             );
@@ -299,111 +268,78 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
         </div>
       </div>
 
-      {/* 3-Step Guided Workflow */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        <Card className="p-4 flex flex-col justify-between space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-sky-600 dark:text-sky-400 font-mono">STEP 1</span>
-            <Badge variant="blue" size="sm">Copy</Badge>
-          </div>
-          <p className="text-xs font-semibold text-slate-900 dark:text-slate-200">1. Copy Extraction Prompt</p>
-          <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-            Click "Copy Extraction Prompt" above. It instructs the AI to recognize course codes, credit hours, grades, and merge multi-page tables into one.
-          </p>
-        </Card>
-
-        <Card className="p-4 flex flex-col justify-between space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 font-mono">STEP 2</span>
-            <Badge variant="amber" size="sm">Clean & Cropped</Badge>
-          </div>
-          <p className="text-xs font-semibold text-slate-900 dark:text-slate-200">2. Take Clean, Cropped Photos</p>
-          <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-            Ensure good lighting, zero glare, and flat orientation. Crop to include all table borders, columns (IDs, Course GPs/LGs, GPA/CGPA), and department header. Upload Page 1, Page 2, etc. together into AI.
-          </p>
-        </Card>
-
-        <Card className="p-4 flex flex-col justify-between space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 font-mono">STEP 3</span>
-            <Badge variant="emerald" size="sm">Instant Ingestion</Badge>
-          </div>
-          <p className="text-xs font-semibold text-slate-900 dark:text-slate-200">3. Paste or Upload .md</p>
-          <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-            Copy the AI's Markdown table output and paste it below (or upload the .md file). The engine will parse all records and unlock the dashboard.
-          </p>
-        </Card>
-      </div>
-
-      {/* Navigation Tabs (Directly above the upload/paste box) */}
+      {/* Navigation Tabs (if injected) */}
       {navigationTabs && (
-        <div className="pt-2">
+        <div>
           {navigationTabs}
         </div>
       )}
 
-      {/* Input Area: Dropzone + Textarea */}
+      {/* STEP 3: Paste Markdown Output */}
       <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-          <label className="text-xs font-bold text-slate-800 dark:text-slate-300 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-            Paste AI Markdown Table or Drop .md File:
-          </label>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+              STEP 3
+            </span>
+            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
+              Paste Extracted Markdown
+            </h3>
+          </div>
 
           {/* Dynamic Detection Badges */}
           <div className="flex flex-wrap items-center gap-1.5">
             {detectedInst && (
-              <span className="text-[10px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+              <span className="text-[10px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md flex items-center gap-1">
                 <Building2 className="w-3 h-3 text-slate-500 dark:text-slate-400" />
                 {detectedInst}
               </span>
             )}
             {detectedDept && (
-              <span className="text-[10px] font-medium text-sky-800 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-md flex items-center gap-1 border border-sky-200 dark:border-sky-800/60">
+              <span className="text-[10px] font-medium text-sky-800 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-md flex items-center gap-1">
                 <GraduationCap className="w-3 h-3 text-sky-500 dark:text-sky-400" />
                 {detectedDept}
               </span>
             )}
             {detectedSemester && (
-              <span className="text-[10px] font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md flex items-center gap-1 border border-emerald-200 dark:border-emerald-800/60">
+              <span className="text-[10px] font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md flex items-center gap-1">
                 <BookOpen className="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
                 {detectedSemester}
               </span>
             )}
             {detectedCourses > 0 && (
-              <span className="text-[10px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md flex items-center gap-1 border border-amber-200 dark:border-amber-800/60">
+              <span className="text-[10px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md flex items-center gap-1">
                 <BookOpen className="w-3 h-3 text-amber-500 dark:text-amber-400" />
                 {Math.round(detectedCourses)} Courses
               </span>
             )}
             {estimatedStudents > 0 && (
-              <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+              <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/80 px-2.5 py-0.5 rounded-full">
                 ✓ ~{estimatedStudents} Students Detected
               </span>
             )}
           </div>
         </div>
 
-        {/* Drag & Drop Box */}
+        {/* Sleek Code Editor Block */}
         <div
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
-          className={`relative border-2 border-dashed rounded-2xl transition-all ${dragOver
-              ? 'border-emerald-500 bg-emerald-500/5 shadow-lg shadow-emerald-500/10'
-              : 'border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 hover:border-slate-400 dark:hover:border-slate-700'
-            }`}
+          className={`rounded-2xl transition-all overflow-hidden bg-slate-50 dark:bg-slate-900/60 ${
+            dragOver ? 'ring-2 ring-emerald-500 bg-emerald-500/5' : ''
+          }`}
         >
           <textarea
             value={markdownInput}
             onChange={(e) => setMarkdownInput(e.target.value)}
-            placeholder="# Academic Result Sheet&#10;- **Institution**: Jagannath University&#10;- **Department**: Department of Computer Science & Engineering&#10;- **Semester**: BSc 1st Year 2nd Semester Examination 2023&#10;- **Session / Batch**: Session: 2022-23&#10;&#10;| S/N | Student ID | Student Name | CSE-1201 GP | CSE-1201 LG | CSEL-1202 GP | CSEL-1202 LG | ... | GPA | CGPA |&#10;| 1 | B220305009 | MD. TANVIR HASAN | 4.00 | A+ | 3.75 | A | ... | 3.88 | 3.82 |"
-            rows={9}
-            className="w-full p-4 bg-transparent text-slate-900 dark:text-slate-100 text-xs font-mono resize-y focus:outline-none placeholder-slate-400 dark:placeholder-slate-600"
+            placeholder="# Academic Result Sheet&#10;- **Institution**: Jagannath University&#10;- **Department**: Department of Computer Science & Engineering&#10;- **Semester**: BSc 1st Year 1st Semester Examination 2023&#10;- **Session / Batch**: Session: 2022-23&#10;&#10;| S/N | Student ID | Student Name | CSE-1101 GP | CSE-1101 LG | ... | Total GP | GPA | Cumulative Credits | CGPA | Result Status |&#10;| 1 | B210305018 | FEERDAUS HASAN PRINCE | 2.50 | C+ | ... | 33.00 | 1.61 | 20.50 | 1.61 | CP |"
+            rows={10}
+            className="w-full p-4 sm:p-5 bg-transparent text-slate-900 dark:text-slate-100 text-xs font-mono resize-y focus:outline-none placeholder-slate-400 dark:placeholder-slate-600 leading-relaxed"
           />
 
-          {/* Quick Upload Action Bar */}
-          <div className="p-3 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-950/40 rounded-b-2xl">
+          {/* Bottom Bar within Editor */}
+          <div className="px-4 py-2.5 bg-slate-100/70 dark:bg-slate-950/50 flex flex-col sm:flex-row items-center justify-between gap-2.5">
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <input
                 type="file"
@@ -421,33 +357,22 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
                 Upload .md file instead
               </button>
               {selectedFileName && (
-                <span className="text-slate-800 dark:text-slate-300 font-mono text-[11px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-transparent">
+                <span className="text-slate-800 dark:text-slate-300 font-mono text-[11px] bg-white dark:bg-slate-800 px-2 py-0.5 rounded">
                   {selectedFileName}
                 </span>
               )}
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              {markdownInput && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => { setMarkdownInput(''); setSelectedFileName(''); setErrorMsg(null); }}
-                  className="text-xs text-slate-400 hover:text-rose-400"
-                >
-                  Clear
-                </Button>
-              )}
+            {markdownInput && (
               <Button
-                size="md"
-                onClick={handleSubmit}
-                disabled={!markdownInput.trim() || isProcessing}
-                leftIcon={isProcessing ? <Loader2 className="w-4 h-4 animate-spin text-emerald-300" /> : <Sparkles className="w-4 h-4 text-emerald-300" />}
-                className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-lg shadow-emerald-900/30"
+                variant="ghost"
+                size="sm"
+                onClick={() => { setMarkdownInput(''); setSelectedFileName(''); setErrorMsg(null); }}
+                className="text-xs text-slate-400 hover:text-rose-400"
               >
-                {isProcessing ? 'Analyzing Dataset...' : 'Analyze the Dataset →'}
+                Clear
               </Button>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -461,6 +386,19 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
           </button>
         </div>
       )}
+
+      {/* Primary Centered Call-To-Action Button */}
+      <div className="flex justify-center pt-2 pb-4">
+        <Button
+          size="lg"
+          onClick={handleSubmit}
+          disabled={!markdownInput.trim() || isProcessing}
+          leftIcon={isProcessing ? <Loader2 className="w-5 h-5 animate-spin text-emerald-300" /> : <Sparkles className="w-5 h-5 text-emerald-300" />}
+          className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-bold shadow-lg shadow-emerald-900/30 w-full sm:w-auto"
+        >
+          {isProcessing ? 'Analyzing Dataset...' : 'Analyze the Dataset →'}
+        </Button>
+      </div>
     </div>
   );
 };

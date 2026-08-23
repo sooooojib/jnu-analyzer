@@ -2,7 +2,6 @@ import React, { useState, Suspense, lazy } from 'react';
 import { Shell } from './components/layout/Shell';
 import { DatasetStatusCard } from './components/upload/DatasetStatusCard';
 import { ClaudeAiAssistant } from './components/upload/ClaudeAiAssistant';
-import { Card } from './components/common/Card';
 import { Button } from './components/common/Button';
 import { Alert } from './components/common/Alert';
 import { ScorecardSkeleton } from './components/common/Skeleton';
@@ -218,40 +217,7 @@ export const App: React.FC = () => {
 
       {/* Tab 1: Upload & Dataset */}
       {activeTab === 'upload' && (
-        <div className="space-y-8 animate-in fade-in duration-200">
-          {/* User-Centric Value Prop Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <Card glass className="p-5">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3">
-                <LayoutDashboard className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-1.5">Instant Student Scorecard</h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Enter your student ID to immediately inspect your semester marks, GPA, overall CGPA, and batch ranking.
-              </p>
-            </Card>
-
-            <Card glass className="p-5">
-              <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center mb-3">
-                <BarChart2 className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-              </div>
-              <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-1.5">Class Cohort Analytics</h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Explore class-wide performance metrics, GPA distributions, course toppers, and deterministic ranking percentiles.
-              </p>
-            </Card>
-
-            <Card glass className="p-5">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3">
-                <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-1.5">Head-to-Head Comparison</h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Select any two students to compare grades course-by-course with side-by-side differentials and charts.
-              </p>
-            </Card>
-          </div>
-
+        <div className="space-y-6 animate-in fade-in duration-200">
           {activeSession ? (
             <div className="space-y-6">
               <DatasetStatusCard

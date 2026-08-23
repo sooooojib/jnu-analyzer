@@ -55,7 +55,8 @@ class MarkdownSheetParser:
         """
         Dynamically parse markdown content for any institution, department, semester, and course list.
         """
-        lines = md_content.strip().splitlines()
+        clean_content = re.sub(r"<analysis_scratchpad>.*?</analysis_scratchpad>", "", md_content, flags=re.DOTALL | re.IGNORECASE)
+        lines = clean_content.strip().splitlines()
         warnings: List[str] = []
 
         # 1. Dynamically extract metadata and declared course list from document headers/body
