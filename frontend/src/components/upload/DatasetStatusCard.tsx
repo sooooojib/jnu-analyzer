@@ -85,7 +85,7 @@ export const DatasetStatusCard: React.FC<DatasetStatusCardProps> = ({
               rightIcon={<ArrowRight className="w-4 h-4" />}
               className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold"
             >
-              Explore Students →
+              Explore Students
             </Button>
           )}
         </div>

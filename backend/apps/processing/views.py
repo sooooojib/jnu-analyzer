@@ -217,7 +217,7 @@ class ClaudePromptView(APIView):
                         "model": "Gemini 3.1 Pro / Pro (Latest)",
                         "url": "https://aistudio.google.com",
                         "description": "Recommended for multi-page documents (supports 10+ high-res result sheets with 2M token window).",
-                        "badge": "⭐ #1 Recommended",
+                        "badge": "#1 Recommended",
                         "color": "amber",
                     },
                     {

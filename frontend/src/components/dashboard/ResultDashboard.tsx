@@ -18,7 +18,8 @@ import {
   GraduationCap,
   Scale, 
   Info,
-  Download
+  Download,
+  X
 } from 'lucide-react';
 
 // Charts
@@ -260,7 +261,9 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>{exportMessage}</span>
           </div>
-          <button type="button" onClick={() => setExportMessage(null)} className="text-emerald-500 hover:text-emerald-700 font-bold ml-2">✕</button>
+          <button type="button" onClick={() => setExportMessage(null)} className="text-emerald-600 dark:text-emerald-400 hover:opacity-80 p-0.5 rounded transition-opacity ml-2" aria-label="Dismiss message">
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
 
