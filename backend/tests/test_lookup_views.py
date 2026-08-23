@@ -100,6 +100,20 @@ class StudentLookupViewsTestCase(TestCase):
         self.assertEqual(len(data["course_grades"]), 2)
         self.assertEqual(data["semester_result"]["gpa"], 3.92)
         self.assertEqual(data["cumulative_result"]["cgpa"], 3.88)
+        # Alice is rank #1 in both subjects
+        self.assertEqual(data["course_grades"][0]["subject_rank"], 1)
+        self.assertEqual(data["course_grades"][1]["subject_rank"], 1)
+
+    def test_lookup_student_subject_ranks(self):
+        # Bob has lower GP in both subjects, so Bob MUST be rank #2 in both subjects
+        url = reverse('processing:student_scorecard', kwargs={'session_id': self.session_a.id, 'student_id': '2102046'})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json().get("data", {})
+        self.assertEqual(data["student_id"], "2102046")
+        self.assertEqual(data["course_grades"][0]["subject_rank"], 2)
+        self.assertEqual(data["course_grades"][1]["subject_rank"], 2)
 
     def test_lookup_student_with_leading_trailing_spaces(self):
         url = reverse('processing:student_scorecard', kwargs={'session_id': self.session_a.id, 'student_id': '  2102045  '})

@@ -552,9 +552,13 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
                               </Badge>
                             </td>
                             <td className="px-5 py-3.5 text-center">
-                              <Badge variant="slate" size="sm">
-                                #{cg.subject_rank || 1}
-                              </Badge>
+                              {cg.subject_rank != null ? (
+                                <Badge variant={cg.subject_rank === 1 ? 'amber' : 'slate'} size="sm">
+                                  #{cg.subject_rank}
+                                </Badge>
+                              ) : (
+                                <span className="text-slate-400">—</span>
+                              )}
                             </td>
                           </tr>
                         );

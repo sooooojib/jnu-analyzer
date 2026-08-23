@@ -463,34 +463,18 @@ class StudentScorecardView(APIView):
         if not target_student:
             raise StudentNotFoundError("The Student ID was not found in this result sheet.")
 
-        # Augment course results with course title & credits
-        course_map = {c.get("course_code"): c for c in courses}
-        course_grades = []
-        for r in target_student.get("results", []):
-            c_code = r.get("course_code", "")
-            c_meta = course_map.get(c_code, {})
-            course_grades.append({
-                "course_code": c_code,
-                "course_title": c_meta.get("course_title", c_code),
-                "credits": float(c_meta.get("credit_hours", 3.0)),
-                "grade_point": float(r.get("grade_point")) if r.get("grade_point") is not None else None,
-                "letter_grade": r.get("letter_grade", ""),
-                "status": r.get("status", "VALID"),
-                "review_reasons": r.get("review_reasons", []),
-            })
+        target_raw_id = str(target_student.get("student_id", "")).strip()
+        target_norm_id = re.sub(r"\s+", "", target_raw_id).upper()
 
-        # Summaries
         cur_sem = target_student.get("current_semester_summary") or {}
         cum_sem = target_student.get("cumulative_summary") or {}
-        
-        # Calculate deterministic rankings dynamically from all students in this dataset
+
+        # 1. Calculate deterministic rankings dynamically from all students in this dataset
         ranking_service = RankingEngineService()
         ranking_report = ranking_service.get_full_ranking_report(students, courses)
         sem_ranks = ranking_report.get("semester_rankings", {})
         cum_ranks = ranking_report.get("cumulative_rankings", {})
-
-        target_raw_id = str(target_student.get("student_id", "")).strip()
-        target_norm_id = re.sub(r"\s+", "", target_raw_id).upper()
+        subj_ranks = ranking_report.get("subject_rankings", {})
 
         sem_info = sem_ranks.get(target_raw_id) or sem_ranks.get(target_norm_id)
         if not sem_info:
@@ -513,13 +497,47 @@ class StudentScorecardView(APIView):
         student_cum_rank = cum_info.get("rank")
         student_cum_percentile = cum_info.get("percentile")
 
-        # Compute full individual analysis using deterministic analysis engine
+        # 2. Compute full individual analysis using deterministic analysis engine
         analysis_service = AnalysisEngineService()
         ind_analysis = analysis_service.calculate_individual_student(
             student=target_student,
             courses=courses,
             all_students=students,
         )
+        cohort_stats = analysis_service.calculate_cohort_statistics(students=students, courses=courses)
+        course_avg_map = {
+            item.get("course_code"): item.get("average_gp")
+            for item in cohort_stats.get("subject_analysis", [])
+        }
+
+        # 3. Augment course results with course title, credits, subject rank, and cohort average
+        course_map = {c.get("course_code"): c for c in courses}
+        course_grades = []
+        for r in target_student.get("results", []):
+            c_code = r.get("course_code", "")
+            c_meta = course_map.get(c_code, {})
+
+            c_rank_info = subj_ranks.get(c_code, {}).get(target_raw_id) or subj_ranks.get(c_code, {}).get(target_norm_id)
+            if not c_rank_info:
+                for s_id, s_data in subj_ranks.get(c_code, {}).items():
+                    if re.sub(r"\s+", "", str(s_id)).upper() == target_norm_id:
+                        c_rank_info = s_data
+                        break
+            c_rank_info = c_rank_info or {}
+
+            course_grades.append({
+                "course_code": c_code,
+                "course_title": c_meta.get("course_title", c_code),
+                "credits": float(c_meta.get("credit_hours", 3.0)),
+                "grade_point": float(r.get("grade_point")) if r.get("grade_point") is not None else None,
+                "letter_grade": r.get("letter_grade", ""),
+                "status": r.get("status", "VALID"),
+                "review_reasons": r.get("review_reasons", []),
+                "subject_rank": c_rank_info.get("rank"),
+                "subject_percentile": c_rank_info.get("percentile"),
+                "is_topper": c_rank_info.get("rank") == 1,
+                "cohort_average_gp": course_avg_map.get(c_code),
+            })
 
         scorecard_data = {
             "student_id": target_student.get("student_id"),
