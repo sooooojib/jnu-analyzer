@@ -13,6 +13,7 @@ import {
   Sun,
   Crop,
   Eye,
+  Terminal,
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
@@ -183,7 +184,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
   return (
     <div className="space-y-8">
       {/* STEP 1: Copy Extraction Prompt */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-1">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-1">
         <div className="space-y-1 max-w-2xl">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
@@ -193,18 +194,23 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
               Copy Extraction Prompt
             </h3>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
             Copy the universal prompt. It instructs AI models to read all student IDs, names, course GPs/LGs, and merge multi-page tabulation sheets into a single Markdown table.
           </p>
         </div>
 
-        <div className="shrink-0">
+        {/* Dark Snippet Container */}
+        <div className="bg-slate-900/90 dark:bg-black/40 border border-slate-700/60 dark:border-white/10 p-2 rounded-xl flex items-center justify-between sm:justify-start gap-3 shadow-inner shrink-0">
+          <div className="flex items-center gap-2 pl-2 pr-1 text-xs font-mono text-slate-400">
+            <Terminal className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span>prompt.txt</span>
+          </div>
           <Button
             variant="primary"
             size="sm"
             onClick={handleCopyPrompt}
             leftIcon={isCopied ? <Check className="w-4 h-4 text-white" /> : <Copy className="w-4 h-4" />}
-            className="w-full sm:w-auto text-xs font-bold px-4 py-2"
+            className="text-xs font-bold px-4 py-2 hover:opacity-90 active:scale-[0.98] transition-all shrink-0"
           >
             {isCopied ? '✓ Prompt Copied!' : 'Copy Extraction Prompt'}
           </Button>
@@ -222,30 +228,60 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
               Choose Vision AI Studio
             </h3>
           </div>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline">
-            Attach photo(s) &amp; paste prompt
-          </span>
         </div>
 
-        {/* Photo Guidelines Bar */}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-3.5 py-2 rounded-xl bg-slate-100/80 dark:bg-slate-850 dark:bg-slate-900/40 text-[11px] text-slate-600 dark:text-slate-300">
-          <div className="flex items-center gap-1.5 font-medium">
-            <Sun className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span>Well-lit with zero screen glare</span>
-          </div>
-          <div className="hidden sm:block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-          <div className="flex items-center gap-1.5 font-medium">
-            <Crop className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-            <span>Crop closely to table borders</span>
-          </div>
-          <div className="hidden sm:block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-          <div className="flex items-center gap-1.5 font-medium">
-            <Eye className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span>Ensure all numbers are legible</span>
+        {/* 3-Step Human-Friendly Photo Prep Guide */}
+        <div className="bg-slate-100/80 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800/60 rounded-xl p-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {/* Step A */}
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 flex items-center justify-center shrink-0">
+                  <Sun className="w-4 h-4 text-amber-500" />
+                </div>
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-200">
+                  1. Good Lighting
+                </h4>
+              </div>
+              <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Take a clear photo in a bright room. Avoid using a flash if it creates a white glare on the paper or screen.
+              </p>
+            </div>
+
+            {/* Step B */}
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-sky-500/10 dark:bg-sky-500/15 flex items-center justify-center shrink-0">
+                  <Crop className="w-4 h-4 text-sky-500" />
+                </div>
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-200">
+                  2. Tight Cropping
+                </h4>
+              </div>
+              <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Before uploading to the AI, crop the photo. Cut out the desk, background, or empty margins so only the data table is visible.
+              </p>
+            </div>
+
+            {/* Step C */}
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 flex items-center justify-center shrink-0">
+                  <Eye className="w-4 h-4 text-emerald-500" />
+                </div>
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-200">
+                  3. Clear Legibility
+                </h4>
+              </div>
+              <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                Zoom in on your photo. Can you easily read every student ID and grade? If it's blurry for you, the AI will struggle too.
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        {/* 3 AI Studio Cards (Responsive: Stack on Mobile, 3-Cols on Desktop) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 md:gap-4">
           {aiTools.map((tool, idx) => {
             const isGoogle = tool.name.toLowerCase().includes('google');
             return (
@@ -254,7 +290,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
                 href={tool.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`p-3.5 rounded-xl transition-all group flex flex-col justify-between space-y-2.5 ${
+                className={`p-3.5 sm:p-4 rounded-xl transition-all group flex flex-col justify-between space-y-2.5 ${
                   isGoogle
                     ? 'bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 hover:border-amber-500/60 shadow-sm hover:scale-[1.01] active:scale-[0.99]'
                     : 'bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-slate-200 dark:border-slate-800/80 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 shadow-sm hover:scale-[1.01] active:scale-[0.99]'
