@@ -38,11 +38,15 @@ export const ComparisonPreview: React.FC<ComparisonPreviewProps> = ({
 
   // Sync state if defaultStudentA / defaultStudentB props update
   useEffect(() => {
-    if (defaultStudentA && defaultStudentA !== studentAInput) {
+    if (defaultStudentA !== studentAInput) {
       setStudentAInput(defaultStudentA);
     }
-    if (defaultStudentB && defaultStudentB !== studentBInput) {
+    if (defaultStudentB !== studentBInput) {
       setStudentBInput(defaultStudentB);
+    }
+    if (!defaultStudentA && !defaultStudentB) {
+      setComparison(null);
+      setErrorMessage(null);
     }
   }, [defaultStudentA, defaultStudentB]);
 

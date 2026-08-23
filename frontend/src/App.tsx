@@ -72,6 +72,16 @@ export const App: React.FC = () => {
     setIsUploading(true);
     setErrorMessage(null);
 
+    // Reset student search & comparison persistent states to start a fresh instance for the new dataset
+    setPersistentStudentId('');
+    setComparisonStudentA('');
+    setComparisonStudentB('');
+    try {
+      localStorage.removeItem('result_analyzer_student_id');
+      localStorage.removeItem('result_analyzer_comp_a');
+      localStorage.removeItem('result_analyzer_comp_b');
+    } catch { }
+
     try {
       const res = await api.uploadMarkdownText(markdownText, filename);
       setActiveSession(res.session);

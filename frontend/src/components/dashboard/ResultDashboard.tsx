@@ -60,11 +60,14 @@ export const ResultDashboard: React.FC<ResultDashboardProps> = ({
 
   // Sync with initialStudentId if prop changes
   useEffect(() => {
-    if (initialStudentId && initialStudentId !== activeStudentId) {
+    if (initialStudentId !== activeStudentId) {
       setSearchInput(initialStudentId);
       setActiveStudentId(initialStudentId);
-      if (sessionId) {
+      if (initialStudentId && sessionId) {
         fetchStudentData(initialStudentId);
+      } else if (!initialStudentId) {
+        setStudent(null);
+        setErrorMessage(null);
       }
     }
   }, [initialStudentId, sessionId]);
