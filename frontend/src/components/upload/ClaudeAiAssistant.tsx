@@ -436,9 +436,9 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
 
       {/* Error Display */}
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-800/60 flex items-center justify-between text-rose-200 text-xs shadow-lg">
+        <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 flex items-center justify-between text-rose-900 dark:text-rose-200 text-xs shadow-sm">
           <span>{errorMsg}</span>
-          <button onClick={() => setErrorMsg(null)} className="text-rose-400 hover:text-rose-200 p-1">
+          <button onClick={() => setErrorMsg(null)} className="text-rose-500 hover:text-rose-700 dark:hover:text-rose-200 p-1">
             <X className="w-4 h-4" />
           </button>
         </div>
