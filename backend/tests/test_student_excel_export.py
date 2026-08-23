@@ -89,8 +89,8 @@ class TestStudentExcelExport(TestCase):
         ws1 = wb["Student Summary"]
         self.assertEqual(ws1["B6"].value, "TANVIRUL ISLAM")
         self.assertEqual(ws1["D6"].value, "2102045")
-        self.assertEqual(ws1["B11"].value, 3.90)  # Semester GPA
-        self.assertEqual(ws1["B13"].value, 3.90)  # Cumulative CGPA
+        self.assertEqual(ws1["B10"].value, 3.90)  # Semester GPA
+        self.assertEqual(ws1["B12"].value, 3.90)  # Cumulative CGPA
 
         # Sheet 2: Subject Results
         ws2 = wb["Subject Results"]

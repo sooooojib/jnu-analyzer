@@ -209,10 +209,10 @@ def build_student_pdf(report_data: Dict[str, Any]) -> bytes:
             Paragraph(str(student_info.get("student_id", "N/A")), meta_val_style),
         ],
         [
-            Paragraph("Merit Serial / Status:", meta_label_style),
-            Paragraph(f"#{student_info.get('serial_no', 'N/A')} ({student_info.get('status', 'VALID')})", meta_val_style),
             Paragraph("Report Date:", meta_label_style),
             Paragraph(gen_time_str, meta_val_style),
+            Paragraph("", meta_label_style),
+            Paragraph("", meta_val_style),
         ],
     ]
     meta_table = Table(meta_table_data, colWidths=[110, 150, 90, 170])
@@ -220,6 +220,7 @@ def build_student_pdf(report_data: Dict[str, Any]) -> bytes:
         ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F8FAFC')),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor('#CBD5E1')),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#F1F5F9')),
+        ('SPAN', (1, 1), (3, 1)),
         ('TOPPADDING', (0, 0), (-1, -1), 5),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
         ('LEFTPADDING', (0, 0), (-1, -1), 8),

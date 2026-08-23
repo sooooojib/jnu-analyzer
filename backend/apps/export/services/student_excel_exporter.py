@@ -89,8 +89,7 @@ def build_student_excel(report_data: Dict[str, Any]) -> bytes:
 
     id_rows = [
         ("Student Name", str(student_info.get("student_name", "UNKNOWN")), "Student ID", str(student_info.get("student_id", "N/A"))),
-        ("Merit Serial", f"#{student_info.get('serial_no', 'N/A')}", "Status", str(student_info.get("status", "VALID"))),
-        ("Report Date", datetime.now().strftime("%Y-%m-%d %H:%M"), "Dataset Source", str(metadata.get("original_filename", "N/A"))),
+        ("Report Date", datetime.now().strftime("%Y-%m-%d %H:%M"), "", ""),
     ]
 
     for row_idx, (l1, v1, l2, v2) in enumerate(id_rows, start=6):
@@ -108,10 +107,10 @@ def build_student_excel(report_data: Dict[str, Any]) -> bytes:
             ws1[f"{col_letter}{row_idx}"].border = thin_border
 
     # Section 2: Academic Performance Summary
-    ws1["A10"] = "Academic Performance Summary"
-    ws1["A10"].font = font_section
-    ws1["A10"].fill = fill_section
-    ws1.merge_cells("A10:D10")
+    ws1["A9"] = "Academic Performance Summary"
+    ws1["A9"].font = font_section
+    ws1["A9"].fill = fill_section
+    ws1.merge_cells("A9:D9")
 
     sem_rank_text = f"#{academic.get('semester_rank')}" if academic.get("semester_rank") else "—"
     if academic.get("semester_percentile"):
@@ -129,7 +128,7 @@ def build_student_excel(report_data: Dict[str, Any]) -> bytes:
         ("Total Subjects Analyzed", academic.get("total_subjects", len(subjects)), "Remarks", academic.get("semester_remarks") or "—"),
     ]
 
-    for row_idx, (l1, v1, l2, v2) in enumerate(summary_rows, start=11):
+    for row_idx, (l1, v1, l2, v2) in enumerate(summary_rows, start=10):
         ws1[f"A{row_idx}"] = l1
         ws1[f"A{row_idx}"].font = font_meta_label
         ws1[f"B{row_idx}"] = v1

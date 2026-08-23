@@ -207,10 +207,10 @@ def build_class_pdf(report_data: Dict[str, Any]) -> bytes:
             Paragraph(f"<b>{class_ov.get('total_subjects', len(subjects))}</b> courses", meta_val_style),
         ],
         [
-            Paragraph("Dataset Source:", meta_label_style),
-            Paragraph(str(metadata.get("original_filename", "N/A")), meta_val_style),
             Paragraph("Report Date:", meta_label_style),
             Paragraph(gen_time_str, meta_val_style),
+            Paragraph("", meta_label_style),
+            Paragraph("", meta_val_style),
         ],
     ]
     meta_table = Table(meta_table_data, colWidths=[110, 150, 100, 160])
@@ -218,6 +218,7 @@ def build_class_pdf(report_data: Dict[str, Any]) -> bytes:
         ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F8FAFC')),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor('#CBD5E1')),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#F1F5F9')),
+        ('SPAN', (1, 1), (3, 1)),
         ('TOPPADDING', (0, 0), (-1, -1), 5),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
         ('LEFTPADDING', (0, 0), (-1, -1), 8),
