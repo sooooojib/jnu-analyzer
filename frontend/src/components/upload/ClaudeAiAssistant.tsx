@@ -10,6 +10,9 @@ import {
   GraduationCap,
   BookOpen,
   Building2,
+  Sun,
+  Crop,
+  Eye,
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
@@ -222,6 +225,24 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
           <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline">
             Attach photo(s) &amp; paste prompt
           </span>
+        </div>
+
+        {/* Photo Guidelines Bar */}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-3.5 py-2 rounded-xl bg-slate-100/80 dark:bg-slate-850 dark:bg-slate-900/40 text-[11px] text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-1.5 font-medium">
+            <Sun className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span>Well-lit with zero screen glare</span>
+          </div>
+          <div className="hidden sm:block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+          <div className="flex items-center gap-1.5 font-medium">
+            <Crop className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+            <span>Crop closely to table borders</span>
+          </div>
+          <div className="hidden sm:block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+          <div className="flex items-center gap-1.5 font-medium">
+            <Eye className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+            <span>Ensure all numbers are legible</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
