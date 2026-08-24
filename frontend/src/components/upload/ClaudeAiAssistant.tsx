@@ -87,27 +87,24 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
       .catch(() => {
         // Fallback universal prompt
         setPromptText(
-          "You are a world-class, zero-error academic data extraction and precision OCR engine.\n" +
-          "You are provided with one or more scanned/photographed academic tabulation result sheets.\n\n" +
-          "Your singular objective is to extract 100% of the records and 100% of the columns into a flawless Markdown document. You must process the image with pixel-level precision, internally tracing every horizontal grid line before generating the text.\n\n" +
-          "### CRITICAL EXTRACTION & ANTI-LAZINESS RULES:\n" +
-          "1. EXHAUSTIVE COLUMNS (NO TRUNCATION): You MUST extract and create columns for EVERY SINGLE course present on the sheet. Do NOT skip any courses. Do NOT abbreviate. Do NOT use ellipses (`...`) to shorten the table. If there are 10 courses, there must be 20 course columns (10 for GP, 10 for LG).\n" +
-          "2. Grid-Lock Tracing: Read strictly left-to-right along horizontal lines. Do NOT shift, swap, or misalign any student's ID, Name, or course marks with neighboring rows.\n" +
-          "3. Scale Verification: You must internally cross-reference every extracted Grade Point (GP) with its Letter Grade (LG) to ensure it matches the Official Grading Scale before outputting the row.\n" +
-          "4. Multi-Page Sequential Merging: If multiple images of the *same exam* are provided, merge all student rows sequentially by Serial Number (S/N) into ONE continuous table.\n" +
-          "5. Missing Data: If a student is completely missing a grade for a course, output `-` for both GP and LG.\n" +
-          "6. The 1st Semester Rule: If the header indicates this is 1st Year 1st Semester, GPA always equals CGPA. Populate both columns with the exact same value.\n\n" +
+          "You are a world-class, zero-error academic data extraction and precision OCR engine. You are provided with scanned academic tabulation result sheets.\n\n" +
+          "Your objective is to extract the student records into a flawless Markdown document. You must process the image with pixel-level precision, internally tracing every horizontal grid line.\n\n" +
+          "### CRITICAL EXTRACTION & STRICT SCHEMA RULES:\n" +
+          "1. **EXHAUSTIVE COURSE COLUMNS:** You MUST extract and create `[CODE] GP` and `[CODE] LG` columns for EVERY SINGLE course present on the sheet. Do not skip any courses.\n" +
+          "2. **STRICT FINAL COLUMN SCHEMA (DO NOT ADD EXTRA COLUMNS):** For the final summary section on the far right of the table, you MUST ONLY output the exact 5 columns defined in my template: `Total GP`, `GPA`, `Cumulative Credits`, `CGPA`, and `Result Status`.\n" +
+          "3. **DROP EXTRA DATA:** You are explicitly instructed to IGNORE and DROP the following columns present in the image: \"Letter Grade (LG)\", \"Sum of Previous Semesters TGP\", \"Total Grade Point(TGP) Cumulative\", and \"Earned Credit Point(ECP)\". DO NOT output them.\n" +
+          "4. **Grid-Lock Tracing:** Read strictly left-to-right. Do NOT shift, swap, or misalign any student's marks with neighboring rows.\n" +
+          "5. **Scale Verification:** Cross-reference every extracted Grade Point (GP) with its Letter Grade (LG) to ensure it matches the standard 4.0 grading scale before outputting.\n" +
+          "6. **Missing Data:** If a student is completely missing a grade for a course, output `-` for both GP and LG.\n" +
+          "7. **The 1st Semester Rule:** If the header indicates this is 1st Year 1st Semester, GPA always equals CGPA. Populate both columns with the exact same value.\n\n" +
           "### HEADER & COLUMN MAPPING RULES:\n" +
-          "- Map \"Total Grade Point (TGP)\" to output column: `Total GP`\n" +
-          "- Map \"GPA\" or \"Total Grade Point Ave.\" to output column: `GPA`\n" +
-          "- Map \"Total Credit Point (TCP)\" under Cumulative Results to output column: `Cumulative Credits`\n" +
-          "- Map \"Comments\" (e.g., P, CP, NP) to output column: `Result Status`\n\n" +
-          "### OFFICIAL GRADING SCALE (Must be strictly adhered to):\n" +
-          "A+ = 4.00 | A = 3.75 | A- = 3.50 | B+ = 3.25 | B = 3.00 | B- = 2.75 | C+ = 2.50 | C = 2.25 | D = 2.00 | F = 0.00\n\n" +
+          "- Map \"Total Grade Point (TGP)\" (Semester) to: `Total GP`\n" +
+          "- Map \"Total Grade Point Ave. (GPA)\" to: `GPA`\n" +
+          "- Map \"Total Credit Point (TCP)\" under Cumulative Results to: `Cumulative Credits`\n" +
+          "- Map \"Comments\" (e.g., P, CP, NP) to: `Result Status`\n\n" +
           "### STRICT OUTPUT CONSTRAINTS:\n" +
-          "- Output ONLY the clean Markdown. Do NOT write any conversational text, greetings, or trailing notes.\n" +
+          "- Output ONLY the clean Markdown. Do NOT write any conversational text, explanations, or greetings.\n" +
           "- Normalize all Grade Points to 2 decimal places (e.g., 4.00, 3.50).\n" +
-          "- Generate the FULL table without skipping any subjects.\n" +
           "- Start your response exactly with `# Academic Result Sheet`.\n\n" +
           "# Academic Result Sheet\n" +
           "- **Institution**: [Extracted Name]\n" +
