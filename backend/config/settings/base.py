@@ -93,6 +93,7 @@ USE_POSTGRES = os.getenv('USE_POSTGRES', 'False').lower() in ('true', '1', 't')
 if DATABASE_URL and (DATABASE_URL.startswith('postgres://') or DATABASE_URL.startswith('postgresql://')):
     import urllib.parse
     url = urllib.parse.urlparse(DATABASE_URL)
+    query_opts = dict(urllib.parse.parse_qsl(url.query))
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -101,6 +102,7 @@ if DATABASE_URL and (DATABASE_URL.startswith('postgres://') or DATABASE_URL.star
             'PASSWORD': url.password,
             'HOST': url.hostname,
             'PORT': str(url.port or 5432),
+            **({'OPTIONS': query_opts} if query_opts else {}),
         }
     }
 elif USE_POSTGRES:
