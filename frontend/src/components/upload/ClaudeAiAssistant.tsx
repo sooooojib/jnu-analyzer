@@ -180,16 +180,16 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
     <div className="space-y-8">
       {/* STEP 1: Copy Extraction Prompt */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-1">
-        <div className="space-y-1 max-w-2xl">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+        <div className="space-y-1.5 max-w-2xl">
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 text-xs sm:text-sm md:text-base font-mono font-black tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 rounded-lg shadow-xs shrink-0">
               STEP 1
             </span>
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
               Copy Extraction Prompt
             </h3>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+          <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
             Copy the universal prompt. It instructs AI models to read all student IDs, names, course GPs/LGs, and merge multi-page tabulation sheets into a single Markdown table.
           </p>
         </div>
@@ -214,12 +214,12 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
 
       {/* STEP 2: Select Vision AI Studio */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold text-sky-600 dark:text-sky-400">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 text-xs sm:text-sm md:text-base font-mono font-black tracking-wider text-sky-600 dark:text-sky-400 bg-sky-500/10 dark:bg-sky-500/20 border border-sky-500/30 rounded-lg shadow-xs shrink-0">
               STEP 2
             </span>
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
               Choose Vision AI Studio
             </h3>
           </div>
@@ -234,7 +234,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
                 <div className="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/15 flex items-center justify-center shrink-0">
                   <Sun className="w-4 h-4 text-amber-500" />
                 </div>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-200">
+                <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-200">
                   1. Good Lighting
                 </h4>
               </div>
@@ -249,7 +249,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
                 <div className="w-7 h-7 rounded-lg bg-sky-500/10 dark:bg-sky-500/15 flex items-center justify-center shrink-0">
                   <Crop className="w-4 h-4 text-sky-500" />
                 </div>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-200">
+                <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-200">
                   2. Tight Cropping
                 </h4>
               </div>
@@ -264,7 +264,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
                 <div className="w-7 h-7 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 flex items-center justify-center shrink-0">
                   <Eye className="w-4 h-4 text-emerald-500" />
                 </div>
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-200">
+                <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-200">
                   3. Clear Legibility
                 </h4>
               </div>
@@ -330,12 +330,12 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
 
       {/* STEP 3: Paste Markdown Output */}
       <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 text-xs sm:text-sm md:text-base font-mono font-black tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 rounded-lg shadow-xs shrink-0">
               STEP 3
             </span>
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
               Paste Extracted Markdown
             </h3>
           </div>

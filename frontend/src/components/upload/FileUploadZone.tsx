@@ -302,14 +302,14 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
             </div>
 
             {/* Step Indicators */}
-            <div className="grid grid-cols-3 gap-2 text-[11px] text-slate-400 text-center">
-              <div className={`p-2 rounded-lg border ${uploadProgress >= 30 ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300' : 'bg-slate-950/40 border-slate-800'}`}>
+            <div className="grid grid-cols-3 gap-2 text-xs sm:text-sm text-slate-400 text-center font-medium">
+              <div className={`p-2.5 rounded-lg border transition-colors ${uploadProgress >= 30 ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300 font-semibold' : 'bg-slate-950/40 border-slate-800'}`}>
                 1. Stream File
               </div>
-              <div className={`p-2 rounded-lg border ${uploadProgress >= 70 ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300' : 'bg-slate-950/40 border-slate-800'}`}>
+              <div className={`p-2.5 rounded-lg border transition-colors ${uploadProgress >= 70 ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300 font-semibold' : 'bg-slate-950/40 border-slate-800'}`}>
                 2. Parse Markdown
               </div>
-              <div className={`p-2 rounded-lg border ${uploadProgress === 100 ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300' : 'bg-slate-950/40 border-slate-800'}`}>
+              <div className={`p-2.5 rounded-lg border transition-colors ${uploadProgress === 100 ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300 font-semibold' : 'bg-slate-950/40 border-slate-800'}`}>
                 3. Init Dataset
               </div>
             </div>
