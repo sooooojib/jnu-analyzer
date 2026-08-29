@@ -136,8 +136,8 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
         aria-label="Upload academic result sheet dropzone"
         className={`relative border-2 border-dashed transition-all duration-300 outline-none p-6 sm:p-12 text-center rounded-3xl ${
           isDragOver
-            ? 'border-emerald-400 bg-emerald-950/30 scale-[1.01]'
-            : 'border-slate-800 hover:border-slate-700 bg-slate-900/40 focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-emerald-500/20'
+            ? 'border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/30 scale-[1.01]'
+            : 'border-slate-300 dark:border-slate-800 hover:border-emerald-500/60 dark:hover:border-slate-700 bg-white/70 dark:bg-slate-900/40 shadow-xs focus-visible:border-emerald-500 focus-visible:ring-2 focus-visible:ring-emerald-500/20'
         } ${isUploading ? 'pointer-events-none opacity-90' : 'cursor-pointer'}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -159,23 +159,23 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
           <div className="flex flex-col items-center justify-center max-w-lg mx-auto">
             {/* Upload Icon */}
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-emerald-600/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center mb-6 shadow-inner">
-              <UploadCloud className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-400" />
+              <UploadCloud className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-500 dark:text-emerald-400" />
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-100 mb-2 tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 mb-2 tracking-tight">
               Upload Markdown (.md) Result Sheet
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mb-6 leading-relaxed max-w-md">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-6 leading-relaxed max-w-md">
               Drag and drop your AI-extracted Markdown file, or click to browse. The engine parses subjects, grades, GPAs, and CGPAs universally across any institution.
             </p>
 
             {/* Allowed Formats Pills */}
             <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
               <Badge variant="emerald" size="sm" className="gap-1.5 py-1 px-3">
-                <FileText className="w-3.5 h-3.5 text-emerald-400" /> Markdown (.md / .markdown)
+                <FileText className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> Markdown (.md / .markdown)
               </Badge>
               <Badge variant="slate" size="sm" className="gap-1.5 py-1 px-3">
-                <FileText className="w-3.5 h-3.5 text-sky-400" /> Plain Text (.txt)
+                <FileText className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" /> Plain Text (.txt)
               </Badge>
               <Badge variant="emerald" size="sm" className="gap-1.5 py-1 px-3">
                 <CheckCircle className="w-3.5 h-3.5" /> Max 25 MB
@@ -185,18 +185,18 @@ export const FileUploadZone: React.FC<FileUploadZoneProps> = ({
             {/* Selected File Card */}
             {selectedFile && !activeError && (
               <div 
-                className="w-full mb-6 p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between text-left shadow-lg"
+                className="w-full mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-left shadow-md"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center gap-3.5 overflow-hidden">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                    <FileCheck2 className="w-5 h-5 text-emerald-400" />
+                    <FileCheck2 className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
                   </div>
                   <div className="truncate">
-                    <div className="text-sm font-semibold text-slate-200 truncate">
+                    <div className="text-sm font-semibold text-slate-900 dark:text-slate-200 truncate">
                       {selectedFile.name}
                     </div>
-                    <div className="text-xs text-slate-500 font-mono">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">
                       {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {selectedFile.type || 'Document'}
                     </div>
                   </div>

@@ -195,7 +195,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
         </div>
 
         {/* Theme-Adaptive Snippet Container */}
-        <div className="bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-1.5 sm:p-2 rounded-xl flex items-center justify-between sm:justify-start gap-3 shadow-sm shrink-0">
+        <div className="bg-slate-100 dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800 p-1.5 sm:p-2 rounded-xl flex items-center justify-between sm:justify-start gap-3 shadow-xs shrink-0">
           <div className="flex items-center gap-2 pl-2.5 pr-1 text-xs font-mono text-slate-700 dark:text-slate-300">
             <Terminal className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span className="font-semibold">prompt.txt</span>
@@ -226,7 +226,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
         </div>
 
         {/* 3-Step Human-Friendly Photo Prep Guide */}
-        <div className="bg-slate-100/80 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800/60 rounded-xl p-5">
+        <div className="bg-slate-100/90 dark:bg-slate-800/40 border border-slate-300 dark:border-slate-800/60 rounded-xl p-5 shadow-xs">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {/* Step A */}
             <div className="space-y-1.5">
@@ -380,8 +380,8 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
-          className={`rounded-2xl transition-all overflow-hidden bg-slate-50 dark:bg-slate-900/60 ${
-            dragOver ? 'ring-2 ring-emerald-500 bg-emerald-500/5' : ''
+          className={`rounded-2xl transition-all overflow-hidden border-2 border-slate-300 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 shadow-sm focus-within:border-emerald-500 dark:focus-within:border-emerald-400 focus-within:ring-4 focus-within:ring-emerald-500/10 ${
+            dragOver ? 'border-emerald-500 ring-4 ring-emerald-500/20 bg-emerald-500/5' : ''
           }`}
         >
           <textarea
@@ -389,12 +389,12 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
             onChange={(e) => setMarkdownInput(e.target.value)}
             placeholder="# Academic Result Sheet&#10;- **Institution**: Jagannath University&#10;- **Department**: Department of Computer Science & Engineering&#10;- **Semester**: BSc 1st Year 1st Semester Examination 2023&#10;- **Session / Batch**: Session: 2022-23&#10;&#10;| S/N | Student ID | Student Name | CSE-1101 GP | CSE-1101 LG | ... | Total GP | GPA | Cumulative Credits | CGPA | Result Status |&#10;| 1 | B210305018 | FEERDAUS HASAN PRINCE | 2.50 | C+ | ... | 33.00 | 1.61 | 20.50 | 1.61 | CP |"
             rows={10}
-            className="w-full p-4 sm:p-5 bg-transparent text-slate-900 dark:text-slate-100 text-xs font-mono resize-y focus:outline-none placeholder-slate-400 dark:placeholder-slate-600 leading-relaxed"
+            className="w-full p-4 sm:p-5 bg-transparent text-slate-900 dark:text-slate-100 text-xs font-mono resize-y focus:outline-none placeholder-slate-400 dark:placeholder-slate-500 leading-relaxed"
           />
 
           {/* Bottom Bar within Editor */}
-          <div className="px-4 py-2.5 bg-slate-100/70 dark:bg-slate-950/50 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+          <div className="px-4 py-2.5 bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
               <input
                 type="file"
                 ref={fileInputRef}
@@ -405,13 +405,13 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 font-medium transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium transition-colors"
               >
                 <UploadCloud className="w-3.5 h-3.5" />
                 Upload .md file instead
               </button>
               {selectedFileName && (
-                <span className="text-slate-800 dark:text-slate-300 font-mono text-[11px] bg-white dark:bg-slate-800 px-2 py-0.5 rounded">
+                <span className="text-slate-800 dark:text-slate-200 font-mono text-[11px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded">
                   {selectedFileName}
                 </span>
               )}
@@ -422,7 +422,7 @@ export const ClaudeAiAssistant: React.FC<ClaudeAiAssistantProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => { setMarkdownInput(''); setSelectedFileName(''); setErrorMsg(null); }}
-                className="text-xs text-slate-400 hover:text-rose-400"
+                className="text-xs text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400"
               >
                 Clear
               </Button>
